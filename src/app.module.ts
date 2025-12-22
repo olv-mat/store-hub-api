@@ -24,7 +24,6 @@ import { UserModule } from './modules/user/user.module';
         database: configService.getOrThrow('DATABASE_NAME'),
         autoLoadEntities: true,
         synchronize: true,
-        logging: true,
         ssl: {
           rejectUnauthorized: false,
         },
