@@ -1,6 +1,8 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
 import { UuidDto } from 'src/common/dtos/Uuid.dto';
-import { UserResponseDto } from './dtos/UserResponseDto';
+import { CreateUserDto } from './dtos/CreateUser.dto';
+import { UserResponseDto } from './dtos/UserResponse.dto';
 import { UserResponseMapper } from './mappers/user-response.mapper';
 import { UserService } from './user.service';
 
@@ -20,5 +22,11 @@ export class UserController {
   ): Promise<UserResponseDto> {
     const userEntity = await this.userService.findOne(uuid);
     return UserResponseMapper.toResponseOne(userEntity);
+  }
+
+  @Post()
+  public async create(@Body() dto: CreateUserDto): Promise<DefaultResponseDto> {
+    const { id } = await this.userService.create(dto);
+    return DefaultResponseDto.create(id, 'User created successfully');
   }
 }
