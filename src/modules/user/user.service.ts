@@ -21,8 +21,8 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  public findOne(uuid: string): Promise<UserEntity> {
-    return this.getUserById(uuid);
+  public findOne(id: string): Promise<UserEntity> {
+    return this.getUserById(id);
   }
 
   public async create(dto: CreateUserDto): Promise<UserEntity> {
@@ -33,8 +33,8 @@ export class UserService {
     });
   }
 
-  private async getUserById(uuid: string): Promise<UserEntity> {
-    const userEntity = await this.userRepository.findOneBy({ id: uuid });
+  private async getUserById(id: string): Promise<UserEntity> {
+    const userEntity = await this.userRepository.findOneBy({ id: id });
     if (!userEntity) throw new NotFoundException('User not found');
     return userEntity;
   }

@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { IdParam } from 'src/common/decorators/id-param.decorator';
 import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
-import { UuidDto } from 'src/common/dtos/Uuid.dto';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { UserResponseDto } from './dtos/UserResponse.dto';
 import { UserResponseMapper } from './mappers/user-response.mapper';
@@ -16,11 +16,9 @@ export class UserController {
     return UserResponseMapper.toResponseMany(userEntities);
   }
 
-  @Get(':uuid')
-  public async findOne(
-    @Param('uuid') { uuid }: UuidDto,
-  ): Promise<UserResponseDto> {
-    const userEntity = await this.userService.findOne(uuid);
+  @Get(':id')
+  public async findOne(@IdParam() id: string): Promise<UserResponseDto> {
+    const userEntity = await this.userService.findOne(id);
     return UserResponseMapper.toResponseOne(userEntity);
   }
 

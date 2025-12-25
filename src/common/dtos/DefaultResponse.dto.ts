@@ -1,13 +1,13 @@
 export class DefaultResponseDto {
-  public readonly uuid: string;
+  public readonly id: string;
   public readonly message: string;
 
-  constructor(uuid: string, message: string) {
-    this.uuid = uuid;
+  constructor(id: string, message: string) {
+    this.id = id;
     this.message = message;
   }
 
-  public static create(uuid: string, message: string) {
-    return new DefaultResponseDto(uuid, message);
+  public static create(id: string, message: string) {
+    return new DefaultResponseDto(id, message);
   }
 }
