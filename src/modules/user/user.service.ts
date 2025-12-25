@@ -34,13 +34,13 @@ export class UserService {
   }
 
   private async getUserById(id: string): Promise<UserEntity> {
-    const userEntity = await this.userRepository.findOneBy({ id: id });
-    if (!userEntity) throw new NotFoundException('User not found');
-    return userEntity;
+    const user = await this.userRepository.findOneBy({ id: id });
+    if (!user) throw new NotFoundException('User not found');
+    return user;
   }
 
   private async assertEmailNotUsed(email: string): Promise<void> {
-    const userEntity = await this.userRepository.findOneBy({ email: email });
-    if (userEntity) throw new ConflictException('Email already in use');
+    const user = await this.userRepository.findOneBy({ email: email });
+    if (user) throw new ConflictException('Email already in use');
   }
 }
