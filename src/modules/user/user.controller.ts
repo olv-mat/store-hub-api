@@ -3,7 +3,6 @@ import { IdParam } from 'src/common/decorators/id-param.decorator';
 import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { UserResponseDto } from './dtos/UserResponse.dto';
-import { UserResponseMapper } from './mappers/user-response.mapper';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -12,14 +11,14 @@ export class UserController {
 
   @Get()
   public async findAll(): Promise<UserResponseDto[]> {
-    const userEntities = await this.userService.findAll();
-    return UserResponseMapper.toResponseMany(userEntities);
+    const users = await this.userService.findAll();
+    return UserResponseDto.fromEntities(users);
   }
 
   @Get(':id')
   public async findOne(@IdParam() id: string): Promise<UserResponseDto> {
-    const userEntity = await this.userService.findOne(id);
-    return UserResponseMapper.toResponseOne(userEntity);
+    const user = await this.userService.findOne(id);
+    return UserResponseDto.fromEntity(user);
   }
 
   @Post()
