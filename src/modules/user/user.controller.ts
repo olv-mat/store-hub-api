@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { IdParam } from 'src/common/decorators/id-param.decorator';
 import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
+import { MessageResponseDto } from 'src/common/dtos/MessageResponse.dto';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { UserResponseDto } from './dtos/UserResponse.dto';
 import { UserService } from './user.service';
@@ -25,5 +26,11 @@ export class UserController {
   public async create(@Body() dto: CreateUserDto): Promise<DefaultResponseDto> {
     const { id } = await this.userService.create(dto);
     return DefaultResponseDto.create(id, 'User created successfully');
+  }
+
+  @Delete(':id')
+  public async delete(@IdParam() id: string): Promise<MessageResponseDto> {
+    await this.userService.delete(id);
+    return MessageResponseDto.create('User deleted successfully');
   }
 }

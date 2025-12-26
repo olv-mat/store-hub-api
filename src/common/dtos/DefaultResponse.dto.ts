@@ -7,7 +7,7 @@ export class DefaultResponseDto {
     this.message = message;
   }
 
-  public static create(id: string, message: string) {
+  public static create(id: string, message: string): DefaultResponseDto {
     return new DefaultResponseDto(id, message);
   }
 }
