@@ -33,6 +33,11 @@ export class UserService {
     });
   }
 
+  public async delete(id: string): Promise<void> {
+    await this.getUserById(id);
+    await this.userRepository.delete(id);
+  }
+
   private async getUserById(id: string): Promise<UserEntity> {
     const user = await this.userRepository.findOneBy({ id: id });
     if (!user) throw new NotFoundException('User not found');
