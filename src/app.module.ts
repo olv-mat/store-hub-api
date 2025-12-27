@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CryptographyModule } from './common/modules/cryptography/cryptography.module';
-import { UserModule } from './modules/user/user.module';
+import { TokenModule } from './common/modules/token/token.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
 
 /*
   npm i @nestjs/config
@@ -31,6 +32,7 @@ import { AuthModule } from './modules/auth/auth.module';
       }),
     }),
     CryptographyModule,
+    TokenModule,
     UserModule,
     AuthModule,
   ],
