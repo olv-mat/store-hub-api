@@ -8,12 +8,12 @@ import {
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  public readonly name: string;
 
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  public readonly email: string;
 
   @IsStrongPassword()
-  password: string;
+  public readonly password: string;
 }
