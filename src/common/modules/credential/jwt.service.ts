@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { TokenService } from './token.service';
+import { CredentialService } from './credential.service';
 
 @Injectable()
-export class JwtServiceImplementation implements TokenService {
+export class JwtServiceImplementation implements CredentialService {
   constructor(private readonly jwtService: JwtService) {}
 
   public sign(payload: object): Promise<string> {

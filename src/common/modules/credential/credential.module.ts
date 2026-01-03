@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { CredentialService } from './credential.service';
 import { JwtServiceImplementation } from './jwt.service';
-import { TokenService } from './token.service';
 
 // npm i @nestjs/jwt
 
@@ -22,10 +22,10 @@ import { TokenService } from './token.service';
   ],
   providers: [
     {
-      provide: TokenService,
+      provide: CredentialService,
       useClass: JwtServiceImplementation,
     },
   ],
-  exports: [TokenService],
+  exports: [CredentialService],
 })
-export class TokenModule {}
+export class CredentialModule {}

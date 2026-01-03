@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { CredentialService } from 'src/common/modules/credential/credential.service';
 import { CryptographyService } from 'src/common/modules/cryptography/cryptography.service';
-import { TokenService } from 'src/common/modules/token/token.service';
 import { UserService } from '../user/user.service';
 import { LoginDto } from './dtos/Login.dto';
 
@@ -9,7 +9,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly cryptographyService: CryptographyService,
-    private readonly tokenService: TokenService,
+    private readonly credentialService: CredentialService,
   ) {}
 
   public async login(dto: LoginDto): Promise<string> {
@@ -18,7 +18,7 @@ export class AuthService {
       user &&
       (await this.cryptographyService.compare(dto.password, user.password));
     if (!isValid) throw new UnauthorizedException('Invalid credentials');
-    return this.tokenService.sign({
+    return this.credentialService.sign({
       sub: user.id,
       name: user.name,
       email: user.email,
