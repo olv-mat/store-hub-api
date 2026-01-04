@@ -30,7 +30,9 @@ export class UserController {
   }
 
   @Get('/me')
-  public async findMe(@FromRequest('user') user: AccessTokenPayload) {
+  public async findMe(
+    @FromRequest('user') user: AccessTokenPayload,
+  ): Promise<UserResponseDto> {
     const userEntity = await this.userService.findOne(user.sub);
     return UserResponseDto.fromEntity(userEntity);
   }
@@ -45,6 +47,14 @@ export class UserController {
   public async create(@Body() dto: CreateUserDto): Promise<DefaultResponseDto> {
     const { id } = await this.userService.create(dto);
     return DefaultResponseDto.create(id, 'User created successfully');
+  }
+
+  @Delete('/me')
+  public async deleteMe(
+    @FromRequest('user') user: AccessTokenPayload,
+  ): Promise<MessageResponseDto> {
+    await this.userService.delete(user.sub);
+    return MessageResponseDto.create('User deleted successfully');
   }
 
   @Delete(':id')
