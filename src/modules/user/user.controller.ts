@@ -8,9 +8,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { FromRequest } from 'src/common/decorators/from-request.decorator';
 import { IdParam } from 'src/common/decorators/id-param.decorator';
 import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
 import { MessageResponseDto } from 'src/common/dtos/MessageResponse.dto';
+import { AccessTokenPayload } from 'src/common/modules/credential/contracts/access-token-payload';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { UpdateUserDto } from './dtos/UpdateUser.dto';
 import { UserResponseDto } from './dtos/UserResponse.dto';
@@ -25,6 +27,12 @@ export class UserController {
   public async findAll(): Promise<UserResponseDto[]> {
     const users = await this.userService.findAll();
     return UserResponseDto.fromEntities(users);
+  }
+
+  @Get('/me')
+  public async findMe(@FromRequest('user') user: AccessTokenPayload) {
+    const userEntity = await this.userService.findOne(user.sub);
+    return UserResponseDto.fromEntity(userEntity);
   }
 
   @Get(':id')
