@@ -6,7 +6,7 @@ import { CredentialService } from './credential.service';
 export class JwtServiceImplementation implements CredentialService {
   constructor(private readonly jwtService: JwtService) {}
 
-  public sign(payload: object): Promise<string> {
+  public sign<T extends object>(payload: T): Promise<string> {
     return this.jwtService.signAsync(payload);
   }
 

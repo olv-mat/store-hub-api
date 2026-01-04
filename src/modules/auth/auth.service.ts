@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { AccessTokenPayload } from 'src/common/modules/credential/contracts/access-token-payload';
 import { CredentialService } from 'src/common/modules/credential/credential.service';
 import { CryptographyService } from 'src/common/modules/cryptography/cryptography.service';
 import { UserService } from '../user/user.service';
@@ -18,7 +19,7 @@ export class AuthService {
       user &&
       (await this.cryptographyService.compare(dto.password, user.password));
     if (!isValid) throw new UnauthorizedException('Invalid credentials');
-    return this.credentialService.sign({
+    return this.credentialService.sign<AccessTokenPayload>({
       sub: user.id,
       name: user.name,
       email: user.email,
