@@ -25,8 +25,8 @@ export class UserController {
 
   @Get()
   public async findAll(): Promise<UserResponseDto[]> {
-    const users = await this.userService.findAll();
-    return UserResponseDto.fromEntities(users);
+    const userEntities = await this.userService.findAll();
+    return UserResponseDto.fromEntities(userEntities);
   }
 
   @Get('/me')
@@ -39,8 +39,8 @@ export class UserController {
 
   @Get(':id')
   public async findOne(@IdParam() id: string): Promise<UserResponseDto> {
-    const user = await this.userService.findOne(id);
-    return UserResponseDto.fromEntity(user);
+    const userEntity = await this.userService.findOne(id);
+    return UserResponseDto.fromEntity(userEntity);
   }
 
   @Post()
@@ -61,6 +61,15 @@ export class UserController {
   public async delete(@IdParam() id: string): Promise<MessageResponseDto> {
     await this.userService.delete(id);
     return MessageResponseDto.create('User deleted successfully');
+  }
+
+  @Patch('/me')
+  public async updateMe(
+    @FromRequest('user') user: AccessTokenPayload,
+    @Body() dto: UpdateUserDto,
+  ): Promise<MessageResponseDto> {
+    await this.userService.update(user.sub, dto);
+    return MessageResponseDto.create('User updated successfully');
   }
 
   @Patch(':id')
