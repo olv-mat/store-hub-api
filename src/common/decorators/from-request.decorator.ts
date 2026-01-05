@@ -1,10 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { Request } from 'express';
-import { AccessTokenPayload } from '../modules/credential/contracts/access-token-payload';
-
-type AuthenticatedRequest = Request & {
-  user: AccessTokenPayload;
-};
+import { AuthenticatedRequest } from '../types/authenticated-request.type';
 
 export const FromRequest = createParamDecorator(
   (data: keyof AuthenticatedRequest, context: ExecutionContext): unknown => {
