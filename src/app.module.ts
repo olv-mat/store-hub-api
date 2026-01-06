@@ -5,6 +5,7 @@ import { CredentialModule } from './common/modules/credential/credential.module'
 import { CryptographyModule } from './common/modules/cryptography/cryptography.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { StoreModule } from './modules/store/store.module';
 
 /*
   npm i @nestjs/config
@@ -35,6 +36,7 @@ import { UserModule } from './modules/user/user.module';
     CryptographyModule,
     UserModule,
     AuthModule,
+    StoreModule,
   ],
   controllers: [],
   providers: [],
