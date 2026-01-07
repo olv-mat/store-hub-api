@@ -1,9 +1,10 @@
-import { BaseEntity } from 'src/common/entities/base.entity';
-import { Column, Entity, Index } from 'typeorm';
+import { AbstractEntity } from 'src/common/entities/abstract.entity';
+import { StoreEntity } from 'src/modules/store/entities/store.entity';
+import { Column, Entity, Index, OneToOne } from 'typeorm';
 import { UserRoles } from '../enums/user-roles.enum';
 
 @Entity('users')
-export class UserEntity extends BaseEntity {
+export class UserEntity extends AbstractEntity {
   @Column({ length: 100, nullable: false })
   name: string;
 
@@ -16,4 +17,9 @@ export class UserEntity extends BaseEntity {
 
   @Column({ type: 'enum', enum: UserRoles, default: UserRoles.OWNER })
   role: UserRoles;
+
+  @OneToOne(() => StoreEntity, (store) => store.owner, {
+    nullable: true,
+  })
+  store?: StoreEntity;
 }

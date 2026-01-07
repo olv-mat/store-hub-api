@@ -1,9 +1,16 @@
-import { BaseEntity } from 'src/common/entities/base.entity';
-import { Column, Entity, Index } from 'typeorm';
+import { AbstractEntity } from 'src/common/entities/abstract.entity';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
 
 @Entity('stores')
 @Index(['city', 'state'])
-export class StoreEntity extends BaseEntity {
+export class StoreEntity extends AbstractEntity {
+  @OneToOne(() => UserEntity, (user) => user.store, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'owner_id' })
+  owner: UserEntity;
+
   @Column({ length: 100, nullable: false })
   name: string;
 
