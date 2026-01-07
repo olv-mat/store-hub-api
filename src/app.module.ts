@@ -4,8 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CredentialModule } from './common/modules/credential/credential.module';
 import { CryptographyModule } from './common/modules/cryptography/cryptography.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { UserModule } from './modules/user/user.module';
+import { StoreEntity } from './modules/store/entities/store.entity';
 import { StoreModule } from './modules/store/store.module';
+import { UserEntity } from './modules/user/entities/user.entity';
+import { UserModule } from './modules/user/user.module';
 
 /*
   npm i @nestjs/config
@@ -25,7 +27,8 @@ import { StoreModule } from './modules/store/store.module';
         username: configService.getOrThrow('DATABASE_USERNAME'),
         password: configService.getOrThrow('DATABASE_PASSWORD'),
         database: configService.getOrThrow('DATABASE_NAME'),
-        autoLoadEntities: true,
+        entities: [UserEntity, StoreEntity],
+        autoLoadEntities: false,
         synchronize: true,
         ssl: {
           rejectUnauthorized: false,
