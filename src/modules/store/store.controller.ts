@@ -1,5 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { IdParam } from 'src/common/decorators/id-param.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRoles } from '../user/enums/user-roles.enum';
@@ -16,5 +17,12 @@ export class StoreController {
   public async findAll(): Promise<StoreResponseDto[]> {
     const storeEntities = await this.storeService.findAll();
     return StoreResponseDto.fromEntities(storeEntities);
+  }
+
+  @Get(':id')
+  @Roles(UserRoles.ADMIN)
+  public async findOne(@IdParam() id: string): Promise<StoreResponseDto> {
+    const storeEntity = await this.storeService.findOne(id);
+    return StoreResponseDto.fromEntity(storeEntity);
   }
 }
