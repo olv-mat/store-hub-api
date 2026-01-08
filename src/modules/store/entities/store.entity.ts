@@ -6,6 +6,8 @@ import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
 @Index(['city', 'state'])
 export class StoreEntity extends AbstractEntity {
   @OneToOne(() => UserEntity, (user) => user.store, {
+    eager: true,
+    onDelete: 'CASCADE',
     nullable: false,
   })
   @JoinColumn({ name: 'owner_id' })

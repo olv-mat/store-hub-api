@@ -40,9 +40,9 @@ export class UserService {
   }
 
   public async update(id: string, dto: UpdateUserDto): Promise<void> {
-    const user = await this.getUserById(id);
+    const userEntity = await this.getUserById(id);
     if (dto.email) await this.assertEmailNotUsed(dto.email);
-    await this.userRepository.update(user.id, {
+    await this.userRepository.update(userEntity.id, {
       ...dto,
       ...(dto.password && {
         password: await this.cryptographyService.hash(dto.password),
@@ -55,13 +55,13 @@ export class UserService {
   }
 
   private async getUserById(id: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOneBy({ id: id });
-    if (!user) throw new NotFoundException('User not found');
-    return user;
+    const userEntity = await this.userRepository.findOneBy({ id: id });
+    if (!userEntity) throw new NotFoundException('User not found');
+    return userEntity;
   }
 
   private async assertEmailNotUsed(email: string): Promise<void> {
-    const user = await this.userRepository.findOneBy({ email: email });
-    if (user) throw new ConflictException('Email already in use');
+    const userEntity = await this.userRepository.findOneBy({ email: email });
+    if (userEntity) throw new ConflictException('Email already in use');
   }
 }

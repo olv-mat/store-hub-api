@@ -19,18 +19,9 @@ export class UserResponseDto {
     this.role = role;
   }
 
-  private static create(
-    id: string,
-    name: string,
-    email: string,
-    role: UserRoles,
-  ): UserResponseDto {
-    return new UserResponseDto(id, name, email, role);
-  }
-
   public static fromEntity(entity: UserEntity): UserResponseDto {
     const { id, name, email, role } = entity;
-    return this.create(id, name, email, role);
+    return new UserResponseDto(id, name, email, role);
   }
 
   public static fromEntities(entities: UserEntity[]): UserResponseDto[] {
