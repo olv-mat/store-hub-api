@@ -21,7 +21,7 @@ import { UserResponseDto } from './dtos/UserResponse.dto';
 import { UserRoles } from './enums/user-roles.enum';
 import { UserService } from './user.service';
 
-@Controller('users')
+@Controller('user')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
