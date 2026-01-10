@@ -30,7 +30,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": {{ownerEmail}},\r\n    \"password\": {{ownerPassword}}\r\n}",
+							"raw": "{\r\n    \"email\": \"{{ownerEmail}}\",\r\n    \"password\": \"{{ownerPassword}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -115,7 +115,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": {{ownerName}},\r\n    \"email\": {{ownerEmail}},\r\n    \"password\": {{ownerPassword}}\r\n}",
+							"raw": "{\r\n    \"name\": \"{{ownerName}}\",\r\n    \"email\": \"{{ownerEmail}}\",\r\n    \"password\": \"{{ownerPassword}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
