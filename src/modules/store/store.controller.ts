@@ -7,7 +7,7 @@ import { UserRoles } from '../user/enums/user-roles.enum';
 import { StoreResponseDto } from './dtos/StoreResponse.dto';
 import { StoreService } from './store.service';
 
-@Controller('store')
+@Controller('stores')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class StoreController {
   constructor(private readonly storeService: StoreService) {}
