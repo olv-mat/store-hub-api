@@ -1,4 +1,6 @@
-import { AbstractRepository } from 'src/common/repositories/abstract.repository';
 import { StoreEntity } from '../entities/store.entity';
 
-export abstract class StoreRepository extends AbstractRepository<StoreEntity> {}
+export abstract class StoreRepository {
+  public abstract findAll(): Promise<StoreEntity[]>;
+  public abstract findById(id: string): Promise<StoreEntity | null>;
+}

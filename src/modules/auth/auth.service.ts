@@ -14,16 +14,19 @@ export class AuthService {
   ) {}
 
   public async login(dto: LoginDto): Promise<string> {
-    const user = await this.userService.getUserByEmail(dto.email);
+    const userEntity = await this.userService.getUserByEmail(dto.email);
     const isValid =
-      user &&
-      (await this.cryptographyService.compare(dto.password, user.password));
+      userEntity &&
+      (await this.cryptographyService.compare(
+        dto.password,
+        userEntity.password,
+      ));
     if (!isValid) throw new UnauthorizedException('Invalid credentials');
     return this.credentialService.sign<AccessTokenPayload>({
-      sub: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
+      sub: userEntity.id,
+      name: userEntity.name,
+      email: userEntity.email,
+      role: userEntity.role,
     });
   }
 }
