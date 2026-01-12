@@ -29,7 +29,7 @@ import { UserModule } from './modules/user/user.module';
         database: configService.getOrThrow('DATABASE_NAME'),
         entities: [UserEntity, StoreEntity],
         autoLoadEntities: false,
-        synchronize: true,
+        synchronize: false,
         ssl: {
           rejectUnauthorized: false,
         },

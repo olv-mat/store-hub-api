@@ -14,7 +14,7 @@ export class StoreService {
   ) {}
 
   public findAll(): Promise<StoreEntity[]> {
-    return this.storeRepository.findAll();
+    return this.storeRepository.find();
   }
 
   public findOne(id: string): Promise<StoreEntity> {
