@@ -20,11 +20,15 @@ export class UserService {
   ) {}
 
   public findAll(): Promise<UserEntity[]> {
-    return this.userRepository.findAll();
+    return this.userRepository.find();
   }
 
   public findOne(id: string): Promise<UserEntity> {
     return this.getUserById(id);
+  }
+
+  public async findByEmail(email: string): Promise<UserEntity | null> {
+    return this.userRepository.findByEmail(email);
   }
 
   public async create(dto: CreateUserDto): Promise<UserEntity> {
@@ -49,10 +53,6 @@ export class UserService {
         password: await this.cryptographyService.hash(dto.password),
       }),
     });
-  }
-
-  public async getUserByEmail(email: string): Promise<UserEntity | null> {
-    return await this.userRepository.findByEmail(email);
   }
 
   private async getUserById(id: string): Promise<UserEntity> {

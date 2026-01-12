@@ -50,13 +50,10 @@ export class UserController {
   }
 
   @Post()
-  @Roles(...Object.values(UserRoles))
+  @Roles(UserRoles.ADMIN)
   public async create(@Body() dto: CreateUserDto): Promise<DefaultResponseDto> {
     const { id } = await this.userService.create(dto);
-    return DefaultResponseDto.create(
-      id,
-      'Your account has been created successfully',
-    );
+    return DefaultResponseDto.create(id, 'User created successfully');
   }
 
   @Delete('/me')

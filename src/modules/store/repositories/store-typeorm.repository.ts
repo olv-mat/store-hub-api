@@ -13,11 +13,15 @@ export class StoreTypeOrmRepository extends StoreRepository {
     super();
   }
 
-  public findAll(): Promise<StoreEntity[]> {
+  public find(): Promise<StoreEntity[]> {
     return this.repository.find();
   }
 
   public findById(id: string): Promise<StoreEntity | null> {
     return this.repository.findOneBy({ id: id });
+  }
+
+  public save(partial: Partial<StoreEntity>): Promise<StoreEntity> {
+    return this.repository.save(partial);
   }
 }

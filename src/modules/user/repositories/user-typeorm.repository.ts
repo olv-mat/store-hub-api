@@ -13,7 +13,7 @@ export class UserTypeOrmRepository extends UserRepository {
     super();
   }
 
-  public findAll(): Promise<UserEntity[]> {
+  public find(): Promise<UserEntity[]> {
     return this.repository.find();
   }
 

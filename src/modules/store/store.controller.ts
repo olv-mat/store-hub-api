@@ -1,9 +1,11 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { IdParam } from 'src/common/decorators/id-param.decorator';
+import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRoles } from '../user/enums/user-roles.enum';
+import { CreateStoreDto } from './dtos/CreateStore.dto';
 import { StoreResponseDto } from './dtos/StoreResponse.dto';
 import { StoreService } from './store.service';
 
@@ -24,5 +26,14 @@ export class StoreController {
   public async findOne(@IdParam() id: string): Promise<StoreResponseDto> {
     const storeEntity = await this.storeService.findOne(id);
     return StoreResponseDto.fromEntity(storeEntity);
+  }
+
+  @Post()
+  @Roles(UserRoles.ADMIN)
+  public async create(
+    @Body() dto: CreateStoreDto,
+  ): Promise<DefaultResponseDto> {
+    const { id } = await this.storeService.create(dto);
+    return DefaultResponseDto.create(id, 'Store created successfully');
   }
 }
