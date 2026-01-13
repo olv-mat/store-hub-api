@@ -29,6 +29,10 @@ export class StoreService {
     });
   }
 
+  public async delete(id: string): Promise<void> {
+    await this.storeRepository.delete(id);
+  }
+
   private async getStoreById(id: string): Promise<StoreEntity> {
     const storeEntity = await this.storeRepository.findById(id);
     if (!storeEntity) throw new NotFoundException('Store not found');
