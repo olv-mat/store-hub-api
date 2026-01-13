@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CryptographyService } from 'src/common/modules/cryptography/cryptography.service';
+import { assertHasUpdatableFields } from 'src/common/utils/assert-has-updatable-fields';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { UpdateUserDto } from './dtos/UpdateUser.dto';
 import { UserEntity } from './entities/user.entity';
@@ -40,13 +41,16 @@ export class UserService {
   }
 
   public async delete(id: string): Promise<void> {
-    await this.getUserById(id);
-    await this.userRepository.delete(id);
+    const userEntity = await this.getUserById(id);
+    await this.userRepository.delete(userEntity.id);
   }
 
   public async update(id: string, dto: UpdateUserDto): Promise<void> {
+    assertHasUpdatableFields(dto);
     const userEntity = await this.getUserById(id);
-    if (dto.email) await this.assertEmailNotUsed(dto.email);
+    if (dto.email && dto.email !== userEntity.email) {
+      await this.assertEmailNotUsed(dto.email);
+    }
     await this.userRepository.update(userEntity.id, {
       ...dto,
       ...(dto.password && {

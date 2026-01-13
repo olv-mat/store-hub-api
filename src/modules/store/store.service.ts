@@ -1,4 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { assertHasUpdatableFields } from 'src/common/utils/assert-has-updatable-fields';
 import { UserService } from '../user/user.service';
 import { CreateStoreDto } from './dtos/CreateStore.dto';
 import { UpdateStoreDto } from './dtos/UpdateStore.dto';
@@ -36,6 +37,7 @@ export class StoreService {
   }
 
   public async update(id: string, dto: UpdateStoreDto): Promise<void> {
+    assertHasUpdatableFields(dto);
     const storeEntity = await this.getStoreById(id);
     await this.storeRepository.update(storeEntity.id, dto);
   }
