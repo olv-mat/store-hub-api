@@ -28,4 +28,11 @@ export class StoreTypeOrmRepository extends StoreRepository {
   public async delete(id: string): Promise<void> {
     await this.repository.delete(id);
   }
+
+  public async update(
+    id: string,
+    partial: Partial<StoreEntity>,
+  ): Promise<void> {
+    await this.repository.update(id, partial);
+  }
 }

@@ -1,6 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { CreateStoreDto } from './dtos/CreateStore.dto';
+import { UpdateStoreDto } from './dtos/UpdateStore.dto';
 import { StoreEntity } from './entities/store.entity';
 import { StoreRepository } from './repositories/store.repository';
 import { STORE_REPOSITORY } from './repositories/store.repository.token';
@@ -30,7 +31,13 @@ export class StoreService {
   }
 
   public async delete(id: string): Promise<void> {
-    await this.storeRepository.delete(id);
+    const storeEntity = await this.getStoreById(id);
+    await this.storeRepository.delete(storeEntity.id);
+  }
+
+  public async update(id: string, dto: UpdateStoreDto): Promise<void> {
+    const storeEntity = await this.getStoreById(id);
+    await this.storeRepository.update(storeEntity.id, dto);
   }
 
   private async getStoreById(id: string): Promise<StoreEntity> {

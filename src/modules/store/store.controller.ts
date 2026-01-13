@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { IdParam } from 'src/common/decorators/id-param.decorator';
 import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
@@ -8,6 +16,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRoles } from '../user/enums/user-roles.enum';
 import { CreateStoreDto } from './dtos/CreateStore.dto';
 import { StoreResponseDto } from './dtos/StoreResponse.dto';
+import { UpdateStoreDto } from './dtos/UpdateStore.dto';
 import { StoreService } from './store.service';
 
 @Controller('stores')
@@ -43,5 +52,15 @@ export class StoreController {
   public async delete(@IdParam() id: string): Promise<MessageResponseDto> {
     await this.storeService.delete(id);
     return MessageResponseDto.create('Store deleted successfully');
+  }
+
+  @Patch(':id')
+  @Roles(UserRoles.ADMIN)
+  public async update(
+    @IdParam() id: string,
+    @Body() dto: UpdateStoreDto,
+  ): Promise<MessageResponseDto> {
+    await this.storeService.update(id, dto);
+    return MessageResponseDto.create('Store updated successfully');
   }
 }
