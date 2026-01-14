@@ -15,6 +15,7 @@ import { MessageResponseDto } from 'src/common/dtos/MessageResponse.dto';
 import { AccessTokenPayload } from 'src/common/modules/credential/contracts/access-token-payload';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { StoreResponseDto } from '../store/dtos/StoreResponse.dto';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { UpdateUserDto } from './dtos/UpdateUser.dto';
 import { UserResponseDto } from './dtos/UserResponse.dto';
@@ -40,6 +41,15 @@ export class UserController {
   ): Promise<UserResponseDto> {
     const userEntity = await this.userService.findOne(user.sub);
     return UserResponseDto.fromEntity(userEntity);
+  }
+
+  @Get('/me/store')
+  @Roles(...Object.values(UserRoles))
+  public async findMyStore(
+    @FromRequest('user') user: AccessTokenPayload,
+  ): Promise<StoreResponseDto> {
+    const storeEntity = await this.userService.findMyStore(user.sub);
+    return StoreResponseDto.fromEntity(storeEntity);
   }
 
   @Get(':id')

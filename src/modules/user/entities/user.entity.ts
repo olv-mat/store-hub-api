@@ -19,6 +19,7 @@ export class UserEntity extends AbstractEntity {
   role: UserRoles;
 
   @OneToOne(() => StoreEntity, (store) => store.owner, {
+    eager: true,
     nullable: true,
   })
   store?: StoreEntity;

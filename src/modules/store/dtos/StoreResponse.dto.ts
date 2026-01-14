@@ -1,9 +1,7 @@
-import { UserResponseDto } from 'src/modules/user/dtos/UserResponse.dto';
 import { StoreEntity } from '../entities/store.entity';
 
 type StoreResponseProperties = {
   id: string;
-  owner: UserResponseDto;
   name: string;
   phone: string;
   street: string;
@@ -16,7 +14,6 @@ type StoreResponseProperties = {
 
 export class StoreResponseDto {
   public readonly id: string;
-  public readonly owner: UserResponseDto;
   public readonly name: string;
   public readonly phone: string;
   public readonly street: string;
@@ -28,7 +25,6 @@ export class StoreResponseDto {
 
   private constructor(properties: StoreResponseProperties) {
     this.id = properties.id;
-    this.owner = properties.owner;
     this.name = properties.name;
     this.phone = properties.phone;
     this.street = properties.street;
@@ -42,7 +38,6 @@ export class StoreResponseDto {
   public static fromEntity(entity: StoreEntity): StoreResponseDto {
     return new StoreResponseDto({
       id: entity.id,
-      owner: UserResponseDto.fromEntity(entity.owner),
       name: entity.name,
       phone: entity.phone,
       street: entity.street,
