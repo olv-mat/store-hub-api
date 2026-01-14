@@ -8,6 +8,7 @@ import { StoreEntity } from './modules/store/entities/store.entity';
 import { StoreModule } from './modules/store/store.module';
 import { UserEntity } from './modules/user/entities/user.entity';
 import { UserModule } from './modules/user/user.module';
+import { ProductModule } from './modules/product/product.module';
 
 /*
   npm i @nestjs/config
@@ -40,6 +41,7 @@ import { UserModule } from './modules/user/user.module';
     UserModule,
     AuthModule,
     StoreModule,
+    ProductModule,
   ],
   controllers: [],
   providers: [],
