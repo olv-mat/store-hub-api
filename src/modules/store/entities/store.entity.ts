@@ -1,6 +1,14 @@
 import { AbstractEntity } from 'src/common/entities/abstract.entity';
+import { ProductEntity } from 'src/modules/product/entities/product.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
-import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 @Entity('stores')
 @Index(['city', 'state'])
@@ -41,4 +49,7 @@ export class StoreEntity extends AbstractEntity {
 
   @Column({ length: 2, nullable: false })
   country: string;
+
+  @OneToMany(() => ProductEntity, (product) => product.store)
+  products: ProductEntity[];
 }
