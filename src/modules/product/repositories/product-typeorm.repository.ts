@@ -1,0 +1,17 @@
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ProductEntity } from '../entities/product.entity';
+import { ProductRepository } from './product.repository';
+
+export class ProductTypeOrmRepository extends ProductRepository {
+  constructor(
+    @InjectRepository(ProductEntity)
+    private readonly repository: Repository<ProductEntity>,
+  ) {
+    super();
+  }
+
+  public find(): Promise<ProductEntity[]> {
+    return this.repository.find();
+  }
+}
