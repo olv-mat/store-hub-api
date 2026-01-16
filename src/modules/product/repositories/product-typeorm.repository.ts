@@ -16,4 +16,8 @@ export class ProductTypeOrmRepository extends ProductRepository {
   public find(): Promise<ProductEntity[]> {
     return this.repository.find();
   }
+
+  public findById(id: string): Promise<ProductEntity | null> {
+    return this.repository.findOneBy({ id: id });
+  }
 }
