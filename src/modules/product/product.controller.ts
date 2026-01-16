@@ -1,5 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { IdParam } from 'src/common/decorators/id-param.decorator';
+import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
+import { CreateProductDto } from './dtos/CreateProduct.dto';
 import { ProductResponseDto } from './dtos/ProductResponse.dto';
 import { ProductService } from './product.service';
 
@@ -17,5 +19,13 @@ export class ProductController {
   public async findOne(@IdParam() id: string): Promise<ProductResponseDto> {
     const productEntity = await this.productService.findOne(id);
     return ProductResponseDto.fromEntity(productEntity);
+  }
+
+  @Post()
+  public async create(
+    @Body() dto: CreateProductDto,
+  ): Promise<DefaultResponseDto> {
+    const { id } = await this.productService.create(dto);
+    return DefaultResponseDto.create(id, 'Product created successfully');
   }
 }
