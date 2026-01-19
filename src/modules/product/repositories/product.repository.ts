@@ -8,4 +8,5 @@ export abstract class ProductRepository {
     id: string,
     partial: Partial<ProductEntity>,
   ): Promise<void>;
+  public abstract delete(id: string): Promise<void>;
 }

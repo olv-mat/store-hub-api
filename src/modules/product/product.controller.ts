@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
 import { IdParam } from 'src/common/decorators/id-param.decorator';
 import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
 import { MessageResponseDto } from 'src/common/dtos/MessageResponse.dto';
@@ -38,5 +38,11 @@ export class ProductController {
   ): Promise<MessageResponseDto> {
     await this.productService.update(id, dto);
     return MessageResponseDto.create('Product updated successfully');
+  }
+
+  @Delete(':id')
+  public async delete(@IdParam() id: string): Promise<MessageResponseDto> {
+    await this.productService.delete(id);
+    return MessageResponseDto.create('Product deleted successfully');
   }
 }

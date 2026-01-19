@@ -31,4 +31,8 @@ export class ProductTypeOrmRepository extends ProductRepository {
   ): Promise<void> {
     await this.repository.update(id, partial);
   }
+
+  public async delete(id: string): Promise<void> {
+    await this.repository.delete(id);
+  }
 }
