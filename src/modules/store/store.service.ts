@@ -19,6 +19,10 @@ export class StoreService {
     return this.storeRepository.find();
   }
 
+  public async findMyStore(sub: string): Promise<StoreEntity> {
+    return this.getUserStore(sub);
+  }
+
   public findOne(id: string): Promise<StoreEntity> {
     return this.getStoreById(id);
   }
@@ -31,15 +35,24 @@ export class StoreService {
     });
   }
 
-  public async delete(id: string): Promise<void> {
-    const storeEntity = await this.getStoreById(id);
-    await this.storeRepository.delete(storeEntity.id);
+  public async updateMyStore(sub: string, dto: UpdateStoreDto): Promise<void> {
+    assertHasUpdatableFields(dto);
+    const storeEntity = await this.getUserStore(sub);
+    await this.storeRepository.update(storeEntity.id, dto);
   }
 
   public async update(id: string, dto: UpdateStoreDto): Promise<void> {
     assertHasUpdatableFields(dto);
     const storeEntity = await this.getStoreById(id);
     await this.storeRepository.update(storeEntity.id, dto);
+  }
+
+  private async getUserStore(sub: string): Promise<StoreEntity> {
+    const { store } = await this.userService.findOne(sub);
+    if (!store?.id) {
+      throw new NotFoundException('Store not found for this user');
+    }
+    return store;
   }
 
   private async getStoreById(id: string): Promise<StoreEntity> {

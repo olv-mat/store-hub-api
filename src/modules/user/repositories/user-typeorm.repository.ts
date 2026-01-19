@@ -29,11 +29,11 @@ export class UserTypeOrmRepository extends UserRepository {
     return this.repository.save(partial);
   }
 
-  public async delete(id: string): Promise<void> {
-    await this.repository.delete(id);
-  }
-
   public async update(id: string, partial: Partial<UserEntity>): Promise<void> {
     await this.repository.update(id, partial);
+  }
+
+  public async delete(id: string): Promise<void> {
+    await this.repository.delete(id);
   }
 }

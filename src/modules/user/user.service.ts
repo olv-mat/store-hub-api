@@ -1,14 +1,11 @@
 import {
   ConflictException,
-  forwardRef,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CryptographyService } from 'src/common/modules/cryptography/cryptography.service';
 import { assertHasUpdatableFields } from 'src/common/utils/assert-has-updatable-fields';
-import { StoreEntity } from '../store/entities/store.entity';
-import { StoreService } from '../store/store.service';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { UpdateUserDto } from './dtos/UpdateUser.dto';
 import { UserEntity } from './entities/user.entity';
@@ -20,8 +17,6 @@ export class UserService {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: UserRepository,
-    @Inject(forwardRef(() => StoreService))
-    private readonly storeService: StoreService,
     private readonly cryptographyService: CryptographyService,
   ) {}
 
@@ -35,14 +30,6 @@ export class UserService {
 
   public findOne(id: string): Promise<UserEntity> {
     return this.getUserById(id);
-  }
-
-  public async findMyStore(sub: string): Promise<StoreEntity> {
-    const { store } = await this.getUserById(sub);
-    if (!store?.id) {
-      throw new NotFoundException('Store not found for this user');
-    }
-    return this.storeService.findOne(store.id);
   }
 
   public async create(dto: CreateUserDto): Promise<UserEntity> {

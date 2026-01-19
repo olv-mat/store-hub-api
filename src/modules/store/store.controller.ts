@@ -1,16 +1,10 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { FromRequest } from 'src/common/decorators/from-request.decorator';
 import { IdParam } from 'src/common/decorators/id-param.decorator';
 import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
 import { MessageResponseDto } from 'src/common/dtos/MessageResponse.dto';
+import { AccessTokenPayload } from 'src/common/modules/credential/contracts/access-token-payload';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRoles } from '../user/enums/user-roles.enum';
@@ -31,6 +25,15 @@ export class StoreController {
     return StoreResponseDto.fromEntities(storeEntities);
   }
 
+  @Get('/me')
+  @Roles(...Object.values(UserRoles))
+  public async findMyStore(
+    @FromRequest('user') user: AccessTokenPayload,
+  ): Promise<StoreResponseDto> {
+    const storeEntity = await this.storeService.findMyStore(user.sub);
+    return StoreResponseDto.fromEntity(storeEntity);
+  }
+
   @Get(':id')
   @Roles(UserRoles.ADMIN)
   public async findOne(@IdParam() id: string): Promise<StoreResponseDto> {
@@ -47,11 +50,16 @@ export class StoreController {
     return DefaultResponseDto.create(id, 'Store created successfully');
   }
 
-  @Delete(':id')
-  @Roles(UserRoles.ADMIN)
-  public async delete(@IdParam() id: string): Promise<MessageResponseDto> {
-    await this.storeService.delete(id);
-    return MessageResponseDto.create('Store deleted successfully');
+  @Patch('/me')
+  @Roles(...Object.values(UserRoles))
+  public async updateMyStore(
+    @FromRequest('user') user: AccessTokenPayload,
+    @Body() dto: UpdateStoreDto,
+  ): Promise<MessageResponseDto> {
+    await this.storeService.updateMyStore(user.sub, dto);
+    return MessageResponseDto.create(
+      'Your store has been updated successfully',
+    );
   }
 
   @Patch(':id')

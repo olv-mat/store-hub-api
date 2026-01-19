@@ -5,9 +5,9 @@ export abstract class UserRepository {
   public abstract findById(id: string): Promise<UserEntity | null>;
   public abstract findByEmail(email: string): Promise<UserEntity | null>;
   public abstract save(partial: Partial<UserEntity>): Promise<UserEntity>;
-  public abstract delete(id: string): Promise<void>;
   public abstract update(
     id: string,
     partial: Partial<UserEntity>,
   ): Promise<void>;
+  public abstract delete(id: string): Promise<void>;
 }

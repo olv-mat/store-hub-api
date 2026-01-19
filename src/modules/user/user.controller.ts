@@ -15,7 +15,6 @@ import { MessageResponseDto } from 'src/common/dtos/MessageResponse.dto';
 import { AccessTokenPayload } from 'src/common/modules/credential/contracts/access-token-payload';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { StoreResponseDto } from '../store/dtos/StoreResponse.dto';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { UpdateUserDto } from './dtos/UpdateUser.dto';
 import { UserResponseDto } from './dtos/UserResponse.dto';
@@ -43,15 +42,6 @@ export class UserController {
     return UserResponseDto.fromEntity(userEntity);
   }
 
-  @Get('/me/store')
-  @Roles(...Object.values(UserRoles))
-  public async findMyStore(
-    @FromRequest('user') user: AccessTokenPayload,
-  ): Promise<StoreResponseDto> {
-    const storeEntity = await this.userService.findMyStore(user.sub);
-    return StoreResponseDto.fromEntity(storeEntity);
-  }
-
   @Get(':id')
   @Roles(UserRoles.ADMIN)
   public async findOne(@IdParam() id: string): Promise<UserResponseDto> {
@@ -64,24 +54,6 @@ export class UserController {
   public async create(@Body() dto: CreateUserDto): Promise<DefaultResponseDto> {
     const { id } = await this.userService.create(dto);
     return DefaultResponseDto.create(id, 'User created successfully');
-  }
-
-  @Delete('/me')
-  @Roles(...Object.values(UserRoles))
-  public async deleteMe(
-    @FromRequest('user') user: AccessTokenPayload,
-  ): Promise<MessageResponseDto> {
-    await this.userService.delete(user.sub);
-    return MessageResponseDto.create(
-      'Your account has been deleted successfully',
-    );
-  }
-
-  @Delete(':id')
-  @Roles(UserRoles.ADMIN)
-  public async delete(@IdParam() id: string): Promise<MessageResponseDto> {
-    await this.userService.delete(id);
-    return MessageResponseDto.create('User deleted successfully');
   }
 
   @Patch('/me')
@@ -104,5 +76,23 @@ export class UserController {
   ): Promise<MessageResponseDto> {
     await this.userService.update(id, dto);
     return MessageResponseDto.create('User updated successfully');
+  }
+
+  @Delete('/me')
+  @Roles(...Object.values(UserRoles))
+  public async deleteMe(
+    @FromRequest('user') user: AccessTokenPayload,
+  ): Promise<MessageResponseDto> {
+    await this.userService.delete(user.sub);
+    return MessageResponseDto.create(
+      'Your account has been deleted successfully',
+    );
+  }
+
+  @Delete(':id')
+  @Roles(UserRoles.ADMIN)
+  public async delete(@IdParam() id: string): Promise<MessageResponseDto> {
+    await this.userService.delete(id);
+    return MessageResponseDto.create('User deleted successfully');
   }
 }
