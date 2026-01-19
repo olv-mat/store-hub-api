@@ -24,4 +24,11 @@ export class ProductTypeOrmRepository extends ProductRepository {
   public save(partial: Partial<ProductEntity>): Promise<ProductEntity> {
     return this.repository.save(partial);
   }
+
+  public async update(
+    id: string,
+    partial: Partial<ProductEntity>,
+  ): Promise<void> {
+    await this.repository.update(id, partial);
+  }
 }
