@@ -1,5 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { assertHasUpdatableFields } from 'src/common/utils/assert-has-updatable-fields';
+import { StoreEntity } from '../store/entities/store.entity';
 import { StoreService } from '../store/store.service';
 import { CreateProductDto } from './dtos/CreateProduct.dto';
 import { UpdateProductDto } from './dtos/UpdateProduct.dto';
@@ -23,12 +24,20 @@ export class ProductService {
     return this.getProductById(id);
   }
 
-  public async create(dto: CreateProductDto): Promise<ProductEntity> {
-    const storeEntity = await this.storeService.findOne(dto.storeId);
-    return this.productRepository.save({
-      ...dto,
-      store: storeEntity,
-    });
+  public async createForMyStore(
+    sub: string,
+    dto: CreateProductDto,
+  ): Promise<ProductEntity> {
+    const storeEntity = await this.storeService.findMyStore(sub);
+    return this.create(dto, storeEntity);
+  }
+
+  public async createForAnyStore(
+    id: string,
+    dto: CreateProductDto,
+  ): Promise<ProductEntity> {
+    const storeEntity = await this.storeService.findOne(id);
+    return this.create(dto, storeEntity);
   }
 
   public async update(id: string, dto: UpdateProductDto): Promise<void> {
@@ -46,5 +55,15 @@ export class ProductService {
     const productEntity = await this.productRepository.findById(id);
     if (!productEntity) throw new NotFoundException('Product not found');
     return productEntity;
+  }
+
+  private create(
+    dto: CreateProductDto,
+    storeEntity: StoreEntity,
+  ): Promise<ProductEntity> {
+    return this.productRepository.save({
+      ...dto,
+      store: storeEntity,
+    });
   }
 }
