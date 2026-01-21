@@ -39,7 +39,7 @@ export class StoreService {
   }
 
   private async getStoreByUserId(sub: string): Promise<StoreEntity> {
-    const storeEntity = await this.storeRepository.findByUserId(sub);
+    const storeEntity = await this.storeRepository.findOneByUserId(sub);
     if (!storeEntity) {
       throw new NotFoundException('Store not found for this user');
     }
@@ -47,7 +47,7 @@ export class StoreService {
   }
 
   private async getStoreById(id: string): Promise<StoreEntity> {
-    const storeEntity = await this.storeRepository.findById(id);
+    const storeEntity = await this.storeRepository.findOneById(id);
     if (!storeEntity) throw new NotFoundException('Store not found');
     return storeEntity;
   }

@@ -17,20 +17,16 @@ export class StoreTypeOrmRepository extends StoreRepository {
     return this.repository.find();
   }
 
-  public findByUserId(sub: string): Promise<StoreEntity | null> {
-    return this.repository.findOne({ where: { owner: { id: sub } } });
+  public findOneByUserId(userId: string): Promise<StoreEntity | null> {
+    return this.repository.findOne({ where: { owner: { id: userId } } });
   }
 
-  public findById(id: string): Promise<StoreEntity | null> {
+  public findOneById(id: string): Promise<StoreEntity | null> {
     return this.repository.findOneBy({ id: id });
   }
 
   public save(partial: Partial<StoreEntity>): Promise<StoreEntity> {
     return this.repository.save(partial);
-  }
-
-  public async delete(id: string): Promise<void> {
-    await this.repository.delete(id);
   }
 
   public async update(

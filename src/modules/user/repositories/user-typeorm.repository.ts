@@ -13,7 +13,7 @@ export class UserTypeOrmRepository extends UserRepository {
     super();
   }
 
-  public findByEmail(email: string): Promise<UserEntity | null> {
+  public findOneByEmail(email: string): Promise<UserEntity | null> {
     return this.repository.findOneBy({ email: email });
   }
 
@@ -21,7 +21,7 @@ export class UserTypeOrmRepository extends UserRepository {
     return this.repository.find();
   }
 
-  public findById(id: string): Promise<UserEntity | null> {
+  public findOneById(id: string): Promise<UserEntity | null> {
     return this.repository.findOne({ where: { id: id }, relations: ['store'] });
   }
 

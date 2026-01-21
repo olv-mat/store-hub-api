@@ -21,7 +21,7 @@ export class UserService {
   ) {}
 
   public async findByEmail(email: string): Promise<UserEntity | null> {
-    return this.userRepository.findByEmail(email);
+    return this.userRepository.findOneByEmail(email);
   }
 
   public findAll(): Promise<UserEntity[]> {
@@ -60,13 +60,13 @@ export class UserService {
   }
 
   private async getUserById(id: string): Promise<UserEntity> {
-    const userEntity = await this.userRepository.findById(id);
+    const userEntity = await this.userRepository.findOneById(id);
     if (!userEntity) throw new NotFoundException('User not found');
     return userEntity;
   }
 
   private async assertEmailNotUsed(email: string): Promise<void> {
-    const userEntity = await this.userRepository.findByEmail(email);
+    const userEntity = await this.userRepository.findOneByEmail(email);
     if (userEntity) throw new ConflictException('Email already in use');
   }
 }
