@@ -13,16 +13,16 @@ export class UserTypeOrmRepository extends UserRepository {
     super();
   }
 
+  public findByEmail(email: string): Promise<UserEntity | null> {
+    return this.repository.findOneBy({ email: email });
+  }
+
   public find(): Promise<UserEntity[]> {
     return this.repository.find();
   }
 
   public findById(id: string): Promise<UserEntity | null> {
-    return this.repository.findOneBy({ id: id });
-  }
-
-  public findByEmail(email: string): Promise<UserEntity | null> {
-    return this.repository.findOneBy({ email: email });
+    return this.repository.findOne({ where: { id: id }, relations: ['store'] });
   }
 
   public save(partial: Partial<UserEntity>): Promise<UserEntity> {

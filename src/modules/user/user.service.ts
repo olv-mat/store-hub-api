@@ -40,11 +40,6 @@ export class UserService {
     });
   }
 
-  public async delete(id: string): Promise<void> {
-    const userEntity = await this.getUserById(id);
-    await this.userRepository.delete(userEntity.id);
-  }
-
   public async update(id: string, dto: UpdateUserDto): Promise<void> {
     assertHasUpdatableFields(dto);
     const userEntity = await this.getUserById(id);
@@ -57,6 +52,11 @@ export class UserService {
         password: await this.cryptographyService.hash(dto.password),
       }),
     });
+  }
+
+  public async delete(id: string): Promise<void> {
+    const userEntity = await this.getUserById(id);
+    await this.userRepository.delete(userEntity.id);
   }
 
   private async getUserById(id: string): Promise<UserEntity> {

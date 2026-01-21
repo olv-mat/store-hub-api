@@ -19,12 +19,12 @@ export class UserResponseDto {
     this.role = role;
   }
 
+  public static fromEntities(entities: UserEntity[]): UserResponseDto[] {
+    return entities.map((entity) => this.fromEntity(entity));
+  }
+
   public static fromEntity(entity: UserEntity): UserResponseDto {
     const { id, name, email, role } = entity;
     return new UserResponseDto(id, name, email, role);
-  }
-
-  public static fromEntities(entities: UserEntity[]): UserResponseDto[] {
-    return entities.map((entity) => this.fromEntity(entity));
   }
 }

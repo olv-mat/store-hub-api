@@ -18,9 +18,6 @@ export class UserEntity extends AbstractEntity {
   @Column({ type: 'enum', enum: UserRoles, default: UserRoles.OWNER })
   role: UserRoles;
 
-  @OneToOne(() => StoreEntity, (store) => store.owner, {
-    eager: true,
-    nullable: true,
-  })
+  @OneToOne(() => StoreEntity, (store) => store.owner, { nullable: true })
   store?: StoreEntity;
 }
