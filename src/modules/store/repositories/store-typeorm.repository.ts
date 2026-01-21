@@ -17,6 +17,10 @@ export class StoreTypeOrmRepository extends StoreRepository {
     return this.repository.find();
   }
 
+  public findByUserId(sub: string): Promise<StoreEntity | null> {
+    return this.repository.findOne({ where: { owner: { id: sub } } });
+  }
+
   public findById(id: string): Promise<StoreEntity | null> {
     return this.repository.findOneBy({ id: id });
   }

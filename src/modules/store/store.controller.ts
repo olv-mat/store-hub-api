@@ -11,55 +11,46 @@ import { UserRoles } from '../user/enums/user-roles.enum';
 import { CreateStoreDto } from './dtos/CreateStore.dto';
 import { StoreResponseDto } from './dtos/StoreResponse.dto';
 import { UpdateStoreDto } from './dtos/UpdateStore.dto';
-import { StoreService } from './store.service';
+import { StoreFacade } from './store.facade';
 
 @Controller('stores')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class StoreController {
-  constructor(private readonly storeService: StoreService) {}
+  constructor(private readonly storeFacade: StoreFacade) {}
 
   @Get()
   @Roles(UserRoles.ADMIN)
-  public async findAll(): Promise<StoreResponseDto[]> {
-    const storeEntities = await this.storeService.findAll();
-    return StoreResponseDto.fromEntities(storeEntities);
+  public findAll(): Promise<StoreResponseDto[]> {
+    return this.storeFacade.findAll();
   }
 
   @Get('/me')
-  @Roles(...Object.values(UserRoles))
-  public async findMyStore(
+  @Roles(UserRoles.OWNER)
+  public findMyStore(
     @FromRequest('user') user: AccessTokenPayload,
   ): Promise<StoreResponseDto> {
-    const storeEntity = await this.storeService.findMyStore(user.sub);
-    return StoreResponseDto.fromEntity(storeEntity);
+    return this.storeFacade.findMyStore(user);
   }
 
   @Get(':id')
   @Roles(UserRoles.ADMIN)
-  public async findOne(@IdParam() id: string): Promise<StoreResponseDto> {
-    const storeEntity = await this.storeService.findOne(id);
-    return StoreResponseDto.fromEntity(storeEntity);
+  public findOne(@IdParam() id: string): Promise<StoreResponseDto> {
+    return this.storeFacade.findOne(id);
   }
 
   @Post()
   @Roles(UserRoles.ADMIN)
-  public async create(
-    @Body() dto: CreateStoreDto,
-  ): Promise<DefaultResponseDto> {
-    const { id } = await this.storeService.create(dto);
-    return DefaultResponseDto.create(id, 'Store created successfully');
+  public create(@Body() dto: CreateStoreDto): Promise<DefaultResponseDto> {
+    return this.storeFacade.create(dto);
   }
 
   @Patch('/me')
-  @Roles(...Object.values(UserRoles))
+  @Roles(UserRoles.OWNER)
   public async updateMyStore(
     @FromRequest('user') user: AccessTokenPayload,
     @Body() dto: UpdateStoreDto,
   ): Promise<MessageResponseDto> {
-    await this.storeService.updateMyStore(user.sub, dto);
-    return MessageResponseDto.create(
-      'Your store has been updated successfully',
-    );
+    return this.storeFacade.updateMyStore(user, dto);
   }
 
   @Patch(':id')
@@ -68,7 +59,6 @@ export class StoreController {
     @IdParam() id: string,
     @Body() dto: UpdateStoreDto,
   ): Promise<MessageResponseDto> {
-    await this.storeService.update(id, dto);
-    return MessageResponseDto.create('Store updated successfully');
+    return this.storeFacade.update(id, dto);
   }
 }

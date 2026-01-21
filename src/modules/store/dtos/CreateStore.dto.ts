@@ -11,7 +11,7 @@ import {
 export class CreateStoreDto {
   @IsNotEmpty()
   @IsUUID()
-  public readonly ownerId: string;
+  public readonly owner: string;
 
   @IsNotEmpty()
   @IsString()
