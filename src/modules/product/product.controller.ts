@@ -16,74 +16,80 @@ import { AccessTokenPayload } from 'src/common/modules/credential/contracts/acce
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRoles } from '../user/enums/user-roles.enum';
+import { AssignProductDto } from './dtos/AssignProductDto.dto';
 import { CreateProductDto } from './dtos/CreateProduct.dto';
 import { ProductResponseDto } from './dtos/ProductResponse.dto';
 import { UpdateProductDto } from './dtos/UpdateProduct.dto';
-import { ProductService } from './product.service';
+import { ProductFacade } from './product.facade';
 
 @Controller('products')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productFacade: ProductFacade) {}
 
   @Get()
-  public async findAll(): Promise<ProductResponseDto[]> {
-    const productEntities = await this.productService.findAll();
-    return ProductResponseDto.fromEntities(productEntities);
+  public findAll(): Promise<ProductResponseDto[]> {
+    return this.productFacade.findAll();
   }
 
   @Get(':id')
   public async findOne(@IdParam() id: string): Promise<ProductResponseDto> {
-    const productEntity = await this.productService.findOne(id);
-    return ProductResponseDto.fromEntity(productEntity);
+    return this.productFacade.findOne(id);
   }
 
   @Post('/me')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(...Object.values(UserRoles))
-  public async createProductForMyStore(
-    @FromRequest('user') user: AccessTokenPayload,
+  @Roles(UserRoles.OWNER)
+  public createAsOwner(
     @Body() dto: CreateProductDto,
+    @FromRequest('user') user: AccessTokenPayload,
   ): Promise<DefaultResponseDto> {
-    const storeEntity = await this.productService.createForMyStore(
-      user.sub,
-      dto,
-    );
-    return DefaultResponseDto.create(
-      storeEntity.id,
-      'Product created successfully for your store',
-    );
+    return this.productFacade.createAsOwner(dto, user.sub);
   }
 
-  @Post(':id')
+  @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.ADMIN)
-  public async create(
-    @IdParam() id: string,
-    @Body() dto: CreateProductDto,
+  public createAsAdmin(
+    @Body() dto: AssignProductDto,
   ): Promise<DefaultResponseDto> {
-    const storeEntity = await this.productService.createForAnyStore(id, dto);
-    return DefaultResponseDto.create(
-      storeEntity.id,
-      'Product created successfully',
-    );
+    return this.productFacade.createAsAdmin(dto);
+  }
+
+  @Patch(':id/me')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRoles.OWNER)
+  public updateAsOwner(
+    @IdParam() id: string,
+    @Body() dto: UpdateProductDto,
+    @FromRequest('user') user: AccessTokenPayload,
+  ): Promise<MessageResponseDto> {
+    return this.productFacade.updateAsOwner(id, dto, user.sub);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.ADMIN)
-  public async update(
+  public updateAsAdmin(
     @IdParam() id: string,
     @Body() dto: UpdateProductDto,
   ): Promise<MessageResponseDto> {
-    await this.productService.update(id, dto);
-    return MessageResponseDto.create('Product updated successfully');
+    return this.productFacade.updateAsAdmin(id, dto);
+  }
+
+  @Delete(':id/me')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRoles.OWNER)
+  public deleteAsOwner(
+    @IdParam() id: string,
+    @FromRequest('user') user: AccessTokenPayload,
+  ): Promise<MessageResponseDto> {
+    return this.productFacade.deleteAsOwner(id, user.sub);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.ADMIN)
-  public async delete(@IdParam() id: string): Promise<MessageResponseDto> {
-    await this.productService.delete(id);
-    return MessageResponseDto.create('Product deleted successfully');
+  public deleteAsAdmin(@IdParam() id: string): Promise<MessageResponseDto> {
+    return this.productFacade.deleteAsAdmin(id);
   }
 }
