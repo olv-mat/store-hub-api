@@ -33,7 +33,7 @@ export class UserController {
   }
 
   @Get('/me')
-  @Roles(...Object.values(UserRoles))
+  @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public findMe(
     @FromRequest('user') user: AccessTokenPayload,
   ): Promise<UserResponseDto> {
@@ -53,7 +53,7 @@ export class UserController {
   }
 
   @Patch('/me')
-  @Roles(...Object.values(UserRoles))
+  @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public updateMe(
     @FromRequest('user') user: AccessTokenPayload,
     @Body() dto: UpdateUserDto,
@@ -71,7 +71,7 @@ export class UserController {
   }
 
   @Delete('/me')
-  @Roles(...Object.values(UserRoles))
+  @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public deleteMe(
     @FromRequest('user') user: AccessTokenPayload,
   ): Promise<MessageResponseDto> {

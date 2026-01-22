@@ -1,6 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { assertHasUpdatableFields } from 'src/common/utils/assert-has-updatable-fields';
 import { StoreEntity } from '../store/entities/store.entity';
+import { AssignProductDto } from './dtos/AssignProductDto.dto';
 import { CreateProductDto } from './dtos/CreateProduct.dto';
 import { UpdateProductDto } from './dtos/UpdateProduct.dto';
 import { ProductEntity } from './entities/product.entity';
@@ -19,11 +20,11 @@ export class ProductService {
   }
 
   public findOne(id: string): Promise<ProductEntity> {
-    return this.getProductById(id);
+    return this.getProduct(id);
   }
 
   public create(
-    dto: CreateProductDto,
+    dto: CreateProductDto | AssignProductDto,
     storeEntity: StoreEntity,
   ): Promise<ProductEntity> {
     return this.productRepository.save({
@@ -38,29 +39,25 @@ export class ProductService {
     storeEntity?: StoreEntity,
   ): Promise<void> {
     assertHasUpdatableFields(dto);
-    const productEntity = storeEntity
-      ? await this.getProductById(id, storeEntity)
-      : await this.getProductById(id);
+    const productEntity = await this.getProduct(id, storeEntity?.id);
     await this.productRepository.update(productEntity.id, dto);
   }
 
   public async delete(id: string, storeEntity?: StoreEntity): Promise<void> {
-    const productEntity = storeEntity
-      ? await this.getProductById(id, storeEntity)
-      : await this.getProductById(id);
+    const productEntity = await this.getProduct(id, storeEntity?.id);
     await this.productRepository.delete(productEntity.id);
   }
 
-  private async getProductById(
-    id: string,
-    storeEntity?: StoreEntity,
+  private async getProduct(
+    productId: string,
+    storeId?: string,
   ): Promise<ProductEntity> {
-    const productEntity = storeEntity
-      ? storeEntity.products.find((productEntity) => productEntity.id === id)
-      : await this.productRepository.findById(id);
+    const productEntity = storeId
+      ? await this.productRepository.findOneByStoreId(storeId, productId)
+      : await this.productRepository.findOneById(productId);
     if (!productEntity) {
       throw new NotFoundException(
-        storeEntity ? 'Product not found in your store' : 'Product not found',
+        storeId ? 'Product not found in your store' : 'Product not found',
       );
     }
     return productEntity;

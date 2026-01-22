@@ -39,57 +39,55 @@ export class ProductController {
   @Post('/me')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.OWNER)
-  public createAsOwner(
+  public createMyProduct(
     @Body() dto: CreateProductDto,
     @FromRequest('user') user: AccessTokenPayload,
   ): Promise<DefaultResponseDto> {
-    return this.productFacade.createAsOwner(dto, user.sub);
+    return this.productFacade.create(dto, user);
   }
 
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.ADMIN)
-  public createAsAdmin(
-    @Body() dto: AssignProductDto,
-  ): Promise<DefaultResponseDto> {
-    return this.productFacade.createAsAdmin(dto);
+  public create(@Body() dto: AssignProductDto): Promise<DefaultResponseDto> {
+    return this.productFacade.create(dto);
   }
 
   @Patch(':id/me')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.OWNER)
-  public updateAsOwner(
+  public updateMyProduct(
     @IdParam() id: string,
     @Body() dto: UpdateProductDto,
     @FromRequest('user') user: AccessTokenPayload,
   ): Promise<MessageResponseDto> {
-    return this.productFacade.updateAsOwner(id, dto, user.sub);
+    return this.productFacade.update(id, dto, user);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.ADMIN)
-  public updateAsAdmin(
+  public update(
     @IdParam() id: string,
     @Body() dto: UpdateProductDto,
   ): Promise<MessageResponseDto> {
-    return this.productFacade.updateAsAdmin(id, dto);
+    return this.productFacade.update(id, dto);
   }
 
   @Delete(':id/me')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.OWNER)
-  public deleteAsOwner(
+  public deleteMyProduct(
     @IdParam() id: string,
     @FromRequest('user') user: AccessTokenPayload,
   ): Promise<MessageResponseDto> {
-    return this.productFacade.deleteAsOwner(id, user.sub);
+    return this.productFacade.delete(id, user);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.ADMIN)
-  public deleteAsAdmin(@IdParam() id: string): Promise<MessageResponseDto> {
-    return this.productFacade.deleteAsAdmin(id);
+  public delete(@IdParam() id: string): Promise<MessageResponseDto> {
+    return this.productFacade.delete(id);
   }
 }

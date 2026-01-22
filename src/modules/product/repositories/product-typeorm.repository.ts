@@ -17,8 +17,17 @@ export class ProductTypeOrmRepository extends ProductRepository {
     return this.repository.find();
   }
 
-  public findById(id: string): Promise<ProductEntity | null> {
+  public findOneById(id: string): Promise<ProductEntity | null> {
     return this.repository.findOneBy({ id: id });
+  }
+
+  public findOneByStoreId(
+    storeId: string,
+    productId: string,
+  ): Promise<ProductEntity | null> {
+    return this.repository.findOne({
+      where: { store: { id: storeId }, id: productId },
+    });
   }
 
   public save(partial: Partial<ProductEntity>): Promise<ProductEntity> {
