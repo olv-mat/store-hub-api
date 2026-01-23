@@ -1,65 +1,52 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { assertHasUpdatableFields } from 'src/common/utils/assert-has-updatable-fields';
+import { Repository } from 'typeorm';
 import { StoreEntity } from '../store/entities/store.entity';
-import { AssignProductDto } from './dtos/AssignProductDto.dto';
 import { CreateProductDto } from './dtos/CreateProduct.dto';
 import { UpdateProductDto } from './dtos/UpdateProduct.dto';
 import { ProductEntity } from './entities/product.entity';
-import { ProductRepository } from './repositories/product.repository';
-import { PRODUCT_REPOSITORY } from './repositories/product.repository.token';
 
 @Injectable()
 export class ProductService {
   constructor(
-    @Inject(PRODUCT_REPOSITORY)
-    private readonly productRepository: ProductRepository,
+    @InjectRepository(ProductEntity)
+    private readonly productRepository: Repository<ProductEntity>,
   ) {}
 
   public findAll(): Promise<ProductEntity[]> {
     return this.productRepository.find();
   }
 
-  public findOne(id: string): Promise<ProductEntity> {
-    return this.getProduct(id);
+  public findOne(id: string, relations: string[] = []): Promise<ProductEntity> {
+    return this.getById(id, relations);
   }
 
-  public create(
-    dto: CreateProductDto | AssignProductDto,
-    storeEntity: StoreEntity,
-  ): Promise<ProductEntity> {
+  public create(dto: CreateProductDto): Promise<ProductEntity> {
     return this.productRepository.save({
       ...dto,
-      store: storeEntity,
+      store: { id: dto.store } as StoreEntity,
     });
   }
 
-  public async update(
-    id: string,
-    dto: UpdateProductDto,
-    storeEntity?: StoreEntity,
-  ): Promise<void> {
+  public async update(id: string, dto: UpdateProductDto): Promise<void> {
     assertHasUpdatableFields(dto);
-    const productEntity = await this.getProduct(id, storeEntity?.id);
-    await this.productRepository.update(productEntity.id, dto);
+    await this.productRepository.update(id, dto);
   }
 
-  public async delete(id: string, storeEntity?: StoreEntity): Promise<void> {
-    const productEntity = await this.getProduct(id, storeEntity?.id);
-    await this.productRepository.delete(productEntity.id);
+  public async delete(id: string): Promise<void> {
+    await this.productRepository.delete(id);
   }
 
-  private async getProduct(
-    productId: string,
-    storeId?: string,
+  private async getById(
+    id: string,
+    relations: string[] = [],
   ): Promise<ProductEntity> {
-    const productEntity = storeId
-      ? await this.productRepository.findOneByStoreId(storeId, productId)
-      : await this.productRepository.findOneById(productId);
-    if (!productEntity) {
-      throw new NotFoundException(
-        storeId ? 'Product not found in your store' : 'Product not found',
-      );
-    }
+    const productEntity = await this.productRepository.findOne({
+      where: { id: id },
+      relations,
+    });
+    if (!productEntity) throw new NotFoundException('Product not found');
     return productEntity;
   }
 }

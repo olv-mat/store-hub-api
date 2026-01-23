@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
 import { MessageResponseDto } from 'src/common/dtos/MessageResponse.dto';
 import { AccessTokenPayload } from 'src/common/modules/credential/contracts/access-token-payload';
+import { assertOwner } from 'src/common/utils/assert-owner';
 import { StoreService } from '../store/store.service';
-import { AssignProductDto } from './dtos/AssignProductDto.dto';
 import { CreateProductDto } from './dtos/CreateProduct.dto';
 import { ProductResponseDto } from './dtos/ProductResponse.dto';
 import { UpdateProductDto } from './dtos/UpdateProduct.dto';
@@ -27,49 +27,39 @@ export class ProductFacade {
   }
 
   public async create(
-    dto: CreateProductDto | AssignProductDto,
-    user?: AccessTokenPayload,
+    dto: CreateProductDto,
+    user: AccessTokenPayload,
   ): Promise<DefaultResponseDto> {
-    const storeEntity = user
-      ? await this.storeService.findMyStore(user.sub)
-      : await this.storeService.findOne((dto as AssignProductDto).store);
-    const { id } = await this.productService.create(dto, storeEntity);
-    return DefaultResponseDto.create(
-      id,
-      user
-        ? 'Your product has been created successfully'
-        : 'Product created successfully',
-    );
+    const storeEntity = await this.storeService.findOne(dto.store, ['owner']);
+    assertOwner(user, storeEntity.owner.id);
+    const { id } = await this.productService.create(dto);
+    return DefaultResponseDto.create(id, 'Product created successfully');
   }
 
   public async update(
     id: string,
     dto: UpdateProductDto,
-    user?: AccessTokenPayload,
-  ) {
-    const storeEntity = user
-      ? await this.storeService.findMyStore(user.sub)
-      : undefined;
-    await this.productService.update(id, dto, storeEntity);
-    return MessageResponseDto.create(
-      user
-        ? 'Your product has been updated successfully'
-        : 'Product updated successfully',
-    );
+    user: AccessTokenPayload,
+  ): Promise<MessageResponseDto> {
+    const productEntity = await this.productService.findOne(id, [
+      'store',
+      'store.owner',
+    ]);
+    assertOwner(user, productEntity.store.owner.id);
+    await this.productService.update(productEntity.id, dto);
+    return MessageResponseDto.create('Product updated successfully');
   }
 
   public async delete(
     id: string,
-    user?: AccessTokenPayload,
+    user: AccessTokenPayload,
   ): Promise<MessageResponseDto> {
-    const storeEntity = user
-      ? await this.storeService.findMyStore(user.sub)
-      : undefined;
-    await this.productService.delete(id, storeEntity);
-    return MessageResponseDto.create(
-      user
-        ? 'Your product has been deleted successfully'
-        : 'Product deleted successfully',
-    );
+    const productEntity = await this.productService.findOne(id, [
+      'store',
+      'store.owner',
+    ]);
+    assertOwner(user, productEntity.store.owner.id);
+    await this.productService.delete(productEntity.id);
+    return MessageResponseDto.create('Product deleted successfully');
   }
 }

@@ -4,10 +4,15 @@ import {
   IsNumber,
   IsPositive,
   IsString,
+  IsUUID,
   MaxLength,
 } from 'class-validator';
 
 export class CreateProductDto {
+  @IsNotEmpty()
+  @IsUUID()
+  readonly store: string;
+
   @IsNotEmpty()
   @IsString()
   @MaxLength(100)

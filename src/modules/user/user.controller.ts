@@ -19,68 +19,80 @@ import { CreateUserDto } from './dtos/CreateUser.dto';
 import { UpdateUserDto } from './dtos/UpdateUser.dto';
 import { UserResponseDto } from './dtos/UserResponse.dto';
 import { UserRoles } from './enums/user-roles.enum';
-import { UserFacade } from './user.facade';
+import { UserService } from './user.service';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class UserController {
-  constructor(private readonly userFacade: UserFacade) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get()
   @Roles(UserRoles.ADMIN)
-  public findAll(): Promise<UserResponseDto[]> {
-    return this.userFacade.findAll();
+  public async findAll(): Promise<UserResponseDto[]> {
+    const userEntities = await this.userService.findAll();
+    return UserResponseDto.fromEntities(userEntities);
   }
 
   @Get('/me')
   @Roles(UserRoles.ADMIN, UserRoles.OWNER)
-  public findMe(
+  public async findMe(
     @FromRequest('user') user: AccessTokenPayload,
   ): Promise<UserResponseDto> {
-    return this.userFacade.findMe(user);
+    const userEntity = await this.userService.findOne(user.sub);
+    return UserResponseDto.fromEntity(userEntity);
   }
 
   @Get(':id')
   @Roles(UserRoles.ADMIN)
-  public findOne(@IdParam() id: string): Promise<UserResponseDto> {
-    return this.userFacade.findOne(id);
+  public async findOne(@IdParam() id: string): Promise<UserResponseDto> {
+    const userEntity = await this.userService.findOne(id);
+    return UserResponseDto.fromEntity(userEntity);
   }
 
   @Post()
   @Roles(UserRoles.ADMIN)
-  public create(@Body() dto: CreateUserDto): Promise<DefaultResponseDto> {
-    return this.userFacade.create(dto);
+  public async create(@Body() dto: CreateUserDto): Promise<DefaultResponseDto> {
+    const { id } = await this.userService.create(dto);
+    return DefaultResponseDto.create(id, 'User created successfully');
   }
 
   @Patch('/me')
   @Roles(UserRoles.ADMIN, UserRoles.OWNER)
-  public updateMe(
+  public async updateMe(
     @FromRequest('user') user: AccessTokenPayload,
     @Body() dto: UpdateUserDto,
   ): Promise<MessageResponseDto> {
-    return this.userFacade.updateMe(user, dto);
+    await this.userService.update(user.sub, dto);
+    return MessageResponseDto.create(
+      'Your account has been updated successfully',
+    );
   }
 
   @Patch(':id')
   @Roles(UserRoles.ADMIN)
-  public update(
+  public async update(
     @IdParam() id: string,
     @Body() dto: UpdateUserDto,
   ): Promise<MessageResponseDto> {
-    return this.userFacade.update(id, dto);
+    await this.userService.update(id, dto);
+    return MessageResponseDto.create('User updated successfully');
   }
 
   @Delete('/me')
   @Roles(UserRoles.ADMIN, UserRoles.OWNER)
-  public deleteMe(
+  public async deleteMe(
     @FromRequest('user') user: AccessTokenPayload,
   ): Promise<MessageResponseDto> {
-    return this.userFacade.deleteMe(user);
+    await this.userService.delete(user.sub);
+    return MessageResponseDto.create(
+      'Your account has been deleted successfully',
+    );
   }
 
   @Delete(':id')
   @Roles(UserRoles.ADMIN)
-  public delete(@IdParam() id: string): Promise<MessageResponseDto> {
-    return this.userFacade.delete(id);
+  public async delete(@IdParam() id: string): Promise<MessageResponseDto> {
+    await this.userService.delete(id);
+    return MessageResponseDto.create('User deleted successfully');
   }
 }

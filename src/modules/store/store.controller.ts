@@ -24,18 +24,13 @@ export class StoreController {
     return this.storeFacade.findAll();
   }
 
-  @Get('/me')
-  @Roles(UserRoles.OWNER)
-  public findMyStore(
+  @Get(':id')
+  @Roles(UserRoles.ADMIN, UserRoles.OWNER)
+  public findOne(
+    @IdParam() id: string,
     @FromRequest('user') user: AccessTokenPayload,
   ): Promise<StoreResponseDto> {
-    return this.storeFacade.findMyStore(user);
-  }
-
-  @Get(':id')
-  @Roles(UserRoles.ADMIN)
-  public findOne(@IdParam() id: string): Promise<StoreResponseDto> {
-    return this.storeFacade.findOne(id);
+    return this.storeFacade.findOne(id, user);
   }
 
   @Post()
@@ -44,21 +39,13 @@ export class StoreController {
     return this.storeFacade.create(dto);
   }
 
-  @Patch('/me')
-  @Roles(UserRoles.OWNER)
-  public async updateMyStore(
-    @FromRequest('user') user: AccessTokenPayload,
-    @Body() dto: UpdateStoreDto,
-  ): Promise<MessageResponseDto> {
-    return this.storeFacade.updateMyStore(user, dto);
-  }
-
   @Patch(':id')
-  @Roles(UserRoles.ADMIN)
+  @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public async update(
     @IdParam() id: string,
     @Body() dto: UpdateStoreDto,
+    @FromRequest('user') user: AccessTokenPayload,
   ): Promise<MessageResponseDto> {
-    return this.storeFacade.update(id, dto);
+    return this.storeFacade.update(id, dto, user);
   }
 }

@@ -16,7 +16,6 @@ import { AccessTokenPayload } from 'src/common/modules/credential/contracts/acce
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRoles } from '../user/enums/user-roles.enum';
-import { AssignProductDto } from './dtos/AssignProductDto.dto';
 import { CreateProductDto } from './dtos/CreateProduct.dto';
 import { ProductResponseDto } from './dtos/ProductResponse.dto';
 import { UpdateProductDto } from './dtos/UpdateProduct.dto';
@@ -36,27 +35,20 @@ export class ProductController {
     return this.productFacade.findOne(id);
   }
 
-  @Post('/me')
+  @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRoles.OWNER)
-  public createMyProduct(
+  @Roles(UserRoles.ADMIN, UserRoles.OWNER)
+  public create(
     @Body() dto: CreateProductDto,
     @FromRequest('user') user: AccessTokenPayload,
   ): Promise<DefaultResponseDto> {
     return this.productFacade.create(dto, user);
   }
 
-  @Post()
+  @Patch(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRoles.ADMIN)
-  public create(@Body() dto: AssignProductDto): Promise<DefaultResponseDto> {
-    return this.productFacade.create(dto);
-  }
-
-  @Patch(':id/me')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRoles.OWNER)
-  public updateMyProduct(
+  @Roles(UserRoles.ADMIN, UserRoles.OWNER)
+  public update(
     @IdParam() id: string,
     @Body() dto: UpdateProductDto,
     @FromRequest('user') user: AccessTokenPayload,
@@ -64,30 +56,13 @@ export class ProductController {
     return this.productFacade.update(id, dto, user);
   }
 
-  @Patch(':id')
+  @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRoles.ADMIN)
-  public update(
-    @IdParam() id: string,
-    @Body() dto: UpdateProductDto,
-  ): Promise<MessageResponseDto> {
-    return this.productFacade.update(id, dto);
-  }
-
-  @Delete(':id/me')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRoles.OWNER)
-  public deleteMyProduct(
+  @Roles(UserRoles.ADMIN, UserRoles.OWNER)
+  public delete(
     @IdParam() id: string,
     @FromRequest('user') user: AccessTokenPayload,
   ): Promise<MessageResponseDto> {
     return this.productFacade.delete(id, user);
-  }
-
-  @Delete(':id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRoles.ADMIN)
-  public delete(@IdParam() id: string): Promise<MessageResponseDto> {
-    return this.productFacade.delete(id);
   }
 }

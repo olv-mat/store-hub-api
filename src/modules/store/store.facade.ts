@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
 import { MessageResponseDto } from 'src/common/dtos/MessageResponse.dto';
 import { AccessTokenPayload } from 'src/common/modules/credential/contracts/access-token-payload';
+import { assertOwner } from 'src/common/utils/assert-owner';
 import { UserService } from '../user/user.service';
 import { CreateStoreDto } from './dtos/CreateStore.dto';
 import { StoreResponseDto } from './dtos/StoreResponse.dto';
@@ -20,17 +21,12 @@ export class StoreFacade {
     return StoreResponseDto.fromEntities(storeEntities);
   }
 
-  public async findMyStore(
+  public async findOne(
+    id: string,
     user: AccessTokenPayload,
   ): Promise<StoreResponseDto> {
-    const sub = user.sub;
-    await this.userService.findOne(sub);
-    const storeEntity = await this.storeService.findMyStore(sub);
-    return StoreResponseDto.fromEntity(storeEntity);
-  }
-
-  public async findOne(id: string): Promise<StoreResponseDto> {
-    const storeEntity = await this.storeService.findOne(id);
+    const storeEntity = await this.storeService.findOne(id, ['owner']);
+    assertOwner(user, storeEntity.owner.id);
     return StoreResponseDto.fromEntity(storeEntity);
   }
 
@@ -40,24 +36,14 @@ export class StoreFacade {
     return DefaultResponseDto.create(id, 'Store created successfully');
   }
 
-  public async updateMyStore(
-    user: AccessTokenPayload,
-    dto: UpdateStoreDto,
-  ): Promise<MessageResponseDto> {
-    const sub = user.sub;
-    await this.userService.findOne(sub);
-    const { id } = await this.storeService.findMyStore(sub);
-    await this.storeService.update(id, dto);
-    return MessageResponseDto.create(
-      'Your store has been updated successfully',
-    );
-  }
-
   public async update(
     id: string,
     dto: UpdateStoreDto,
+    user: AccessTokenPayload,
   ): Promise<MessageResponseDto> {
-    await this.storeService.update(id, dto);
+    const storeEntity = await this.storeService.findOne(id, ['owner']);
+    assertOwner(user, storeEntity.owner.id);
+    await this.storeService.update(storeEntity.id, dto);
     return MessageResponseDto.create('Store updated successfully');
   }
 }
