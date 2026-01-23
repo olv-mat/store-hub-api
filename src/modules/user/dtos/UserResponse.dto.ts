@@ -1,22 +1,28 @@
+import { StoreResponseDto } from 'src/modules/store/dtos/StoreResponse.dto';
 import { UserEntity } from '../entities/user.entity';
 import { UserRoles } from '../enums/user-roles.enum';
+
+type UserResponseProperties = {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRoles;
+  store?: StoreResponseDto;
+};
 
 export class UserResponseDto {
   public readonly id: string;
   public readonly name: string;
   public readonly email: string;
   public readonly role: UserRoles;
+  public readonly store?: StoreResponseDto;
 
-  private constructor(
-    id: string,
-    name: string,
-    email: string,
-    role: UserRoles,
-  ) {
-    this.id = id;
-    this.name = name;
-    this.email = email;
-    this.role = role;
+  private constructor(properties: UserResponseProperties) {
+    this.id = properties.id;
+    this.name = properties.name;
+    this.email = properties.email;
+    this.role = properties.role;
+    this.store = properties.store;
   }
 
   public static fromEntities(entities: UserEntity[]): UserResponseDto[] {
@@ -24,7 +30,14 @@ export class UserResponseDto {
   }
 
   public static fromEntity(entity: UserEntity): UserResponseDto {
-    const { id, name, email, role } = entity;
-    return new UserResponseDto(id, name, email, role);
+    return new UserResponseDto({
+      id: entity.id,
+      name: entity.name,
+      email: entity.email,
+      role: entity.role,
+      store: entity.store
+        ? StoreResponseDto.fromEntity(entity.store)
+        : undefined,
+    });
   }
 }

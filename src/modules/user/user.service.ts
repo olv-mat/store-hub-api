@@ -27,8 +27,8 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  public findOne(id: string): Promise<UserEntity> {
-    return this.getById(id);
+  public findOne(id: string, relations: string[] = []): Promise<UserEntity> {
+    return this.getById(id, relations);
   }
 
   public async create(dto: CreateUserDto): Promise<UserEntity> {
@@ -58,8 +58,14 @@ export class UserService {
     await this.userRepository.delete(userEntity.id);
   }
 
-  private async getById(id: string): Promise<UserEntity> {
-    const userEntity = await this.userRepository.findOneBy({ id: id });
+  private async getById(
+    id: string,
+    relations: string[] = [],
+  ): Promise<UserEntity> {
+    const userEntity = await this.userRepository.findOne({
+      where: { id: id },
+      relations,
+    });
     if (!userEntity) throw new NotFoundException('User not found');
     return userEntity;
   }

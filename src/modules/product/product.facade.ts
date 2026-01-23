@@ -22,7 +22,7 @@ export class ProductFacade {
   }
 
   public async findOne(id: string): Promise<ProductResponseDto> {
-    const productEntity = await this.productService.findOne(id);
+    const productEntity = await this.productService.findOne(id, ['store']);
     return ProductResponseDto.fromEntity(productEntity);
   }
 

@@ -25,7 +25,10 @@ export class StoreFacade {
     id: string,
     user: AccessTokenPayload,
   ): Promise<StoreResponseDto> {
-    const storeEntity = await this.storeService.findOne(id, ['owner']);
+    const storeEntity = await this.storeService.findOne(id, [
+      'owner',
+      'products',
+    ]);
     assertOwner(user, storeEntity.owner.id);
     return StoreResponseDto.fromEntity(storeEntity);
   }

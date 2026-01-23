@@ -38,14 +38,14 @@ export class UserController {
   public async findMe(
     @FromRequest('user') user: AccessTokenPayload,
   ): Promise<UserResponseDto> {
-    const userEntity = await this.userService.findOne(user.sub);
+    const userEntity = await this.userService.findOne(user.sub, ['store']);
     return UserResponseDto.fromEntity(userEntity);
   }
 
   @Get(':id')
   @Roles(UserRoles.ADMIN)
   public async findOne(@IdParam() id: string): Promise<UserResponseDto> {
-    const userEntity = await this.userService.findOne(id);
+    const userEntity = await this.userService.findOne(id, ['store']);
     return UserResponseDto.fromEntity(userEntity);
   }
 
