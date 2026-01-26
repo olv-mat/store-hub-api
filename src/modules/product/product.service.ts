@@ -14,8 +14,11 @@ export class ProductService {
     private readonly productRepository: Repository<ProductEntity>,
   ) {}
 
-  public findAll(): Promise<ProductEntity[]> {
-    return this.productRepository.find();
+  public findAll(inStock?: boolean): Promise<ProductEntity[]> {
+    const where = {
+      ...(inStock !== undefined && { inStock: inStock }),
+    };
+    return this.productRepository.find({ where });
   }
 
   public findOne(id: string, relations: string[] = []): Promise<ProductEntity> {

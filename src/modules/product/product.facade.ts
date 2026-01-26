@@ -16,8 +16,8 @@ export class ProductFacade {
     private readonly storeService: StoreService,
   ) {}
 
-  public async findAll(): Promise<ProductResponseDto[]> {
-    const productEntities = await this.productService.findAll();
+  public async findAll(inStock?: boolean): Promise<ProductResponseDto[]> {
+    const productEntities = await this.productService.findAll(inStock);
     return ProductResponseDto.fromEntities(productEntities);
   }
 

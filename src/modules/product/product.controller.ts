@@ -5,6 +5,7 @@ import {
   Get,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -26,8 +27,10 @@ export class ProductController {
   constructor(private readonly productFacade: ProductFacade) {}
 
   @Get()
-  public findAll(): Promise<ProductResponseDto[]> {
-    return this.productFacade.findAll();
+  public findAll(
+    @Query('inStock') inStock?: boolean,
+  ): Promise<ProductResponseDto[]> {
+    return this.productFacade.findAll(inStock);
   }
 
   @Get(':id')
