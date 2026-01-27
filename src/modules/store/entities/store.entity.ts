@@ -50,6 +50,9 @@ export class StoreEntity extends AbstractEntity {
   @Column({ length: 2, nullable: false })
   country: string;
 
+  @Column({ name: 'product_slots', default: 10 })
+  productSlots: number;
+
   @OneToMany(() => ProductEntity, (product) => product.store)
   products: ProductEntity[];
 }
