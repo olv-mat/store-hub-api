@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { assertHasUpdatableFields } from 'src/common/utils/assert-has-updatable-fields';
 import { Repository } from 'typeorm';
@@ -32,6 +36,15 @@ export class StoreService {
   public async update(id: string, dto: UpdateStoreDto): Promise<void> {
     assertHasUpdatableFields(dto);
     await this.storeRepository.update(id, dto);
+  }
+
+  public hasAvailableSlots(
+    storeEntity: StoreEntity,
+    currentUsage: number,
+  ): void {
+    if (currentUsage >= storeEntity.productSlots) {
+      throw new BadRequestException('No available product slots');
+    }
   }
 
   private async getById(

@@ -41,6 +41,10 @@ export class ProductService {
     await this.productRepository.delete(id);
   }
 
+  public countByStoreId(storeId: string): Promise<number> {
+    return this.productRepository.count({ where: { store: { id: storeId } } });
+  }
+
   private async getById(
     id: string,
     relations: string[] = [],

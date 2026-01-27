@@ -32,6 +32,10 @@ export class ProductFacade {
   ): Promise<DefaultResponseDto> {
     const storeEntity = await this.storeService.findOne(dto.store, ['owner']);
     assertOwner(user, storeEntity.owner.id);
+    const occupiedSlots = await this.productService.countByStoreId(
+      storeEntity.id,
+    );
+    this.storeService.hasAvailableSlots(storeEntity, occupiedSlots);
     const { id } = await this.productService.create(dto);
     return DefaultResponseDto.create(id, 'Product created successfully');
   }
