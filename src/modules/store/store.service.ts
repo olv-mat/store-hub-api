@@ -4,10 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EmailService } from 'src/common/modules/email/email.service';
 import { assertHasUpdatableFields } from 'src/common/utils/assert-has-updatable-fields';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../user/entities/user.entity';
 import { CreateStoreDto } from './dtos/CreateStore.dto';
+import { RequestStoreDto } from './dtos/RequestStore.dto';
 import { UpdateStoreDto } from './dtos/UpdateStore.dto';
 import { StoreEntity } from './entities/store.entity';
 
@@ -16,6 +18,7 @@ export class StoreService {
   constructor(
     @InjectRepository(StoreEntity)
     private readonly storeRepository: Repository<StoreEntity>,
+    private readonly emailService: EmailService,
   ) {}
 
   public findAll(): Promise<StoreEntity[]> {
@@ -31,6 +34,18 @@ export class StoreService {
       ...dto,
       owner: { id: dto.owner } as UserEntity,
     });
+  }
+
+  public async request(dto: RequestStoreDto): Promise<void> {
+    const subject = `Store Hub | New Request: ${dto.store}`;
+    const html = `
+          <h3>New store request received</h3>
+          <p><strong>Store:</strong> ${dto.store}</p>
+          <p><strong>Owner:</strong> ${dto.owner}</p>
+          <p><strong>Phone:</strong> ${dto.phone}</p>
+          <p><strong>Description:</strong> ${dto.description}</p>
+        `;
+    await this.emailService.send(subject, html);
   }
 
   public async update(id: string, dto: UpdateStoreDto): Promise<void> {

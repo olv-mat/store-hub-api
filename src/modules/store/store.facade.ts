@@ -5,6 +5,7 @@ import { AccessTokenPayload } from 'src/common/modules/credential/contracts/acce
 import { assertOwner } from 'src/common/utils/assert-owner';
 import { UserService } from '../user/user.service';
 import { CreateStoreDto } from './dtos/CreateStore.dto';
+import { RequestStoreDto } from './dtos/RequestStore.dto';
 import { StoreResponseDto } from './dtos/StoreResponse.dto';
 import { UpdateStoreDto } from './dtos/UpdateStore.dto';
 import { StoreService } from './store.service';
@@ -37,6 +38,11 @@ export class StoreFacade {
     await this.userService.findOne(dto.owner);
     const { id } = await this.storeService.create(dto);
     return DefaultResponseDto.create(id, 'Store created successfully');
+  }
+
+  public async request(dto: RequestStoreDto): Promise<MessageResponseDto> {
+    await this.storeService.request(dto);
+    return MessageResponseDto.create('Store request send successfully');
   }
 
   public async update(

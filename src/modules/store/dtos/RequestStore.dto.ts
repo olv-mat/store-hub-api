@@ -9,19 +9,18 @@ export class RequestStoreDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(100)
-  store: string;
+  public readonly store: string;
 
   @IsNotEmpty()
   @IsString()
-  owner: string;
+  public readonly owner: string;
 
   @IsNotEmpty()
-  @IsString()
   @MaxLength(15)
   @IsPhoneNumber()
-  phone: number;
+  public readonly phone: string;
 
   @IsNotEmpty()
   @IsString()
-  description: string;
+  public readonly description: string;
 }

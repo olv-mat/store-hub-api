@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CredentialModule } from './common/modules/credential/credential.module';
 import { CryptographyModule } from './common/modules/cryptography/cryptography.module';
+import { EmailModule } from './common/modules/email/email.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProductEntity } from './modules/product/entities/product.entity';
 import { ProductModule } from './modules/product/product.module';
@@ -10,7 +11,6 @@ import { StoreEntity } from './modules/store/entities/store.entity';
 import { StoreModule } from './modules/store/store.module';
 import { UserEntity } from './modules/user/entities/user.entity';
 import { UserModule } from './modules/user/user.module';
-import { EmailModule } from './modules/email/email.module';
 
 /*
   npm i @nestjs/config
@@ -25,11 +25,11 @@ import { EmailModule } from './modules/email/email.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.getOrThrow('DATABASE_HOST'),
-        port: configService.getOrThrow('DATABASE_PORT'),
-        username: configService.getOrThrow('DATABASE_USERNAME'),
-        password: configService.getOrThrow('DATABASE_PASSWORD'),
-        database: configService.getOrThrow('DATABASE_NAME'),
+        host: configService.getOrThrow<string>('DATABASE_HOST'),
+        port: configService.getOrThrow<number>('DATABASE_PORT'),
+        username: configService.getOrThrow<string>('DATABASE_USERNAME'),
+        password: configService.getOrThrow<string>('DATABASE_PASSWORD'),
+        database: configService.getOrThrow<string>('DATABASE_NAME'),
         entities: [UserEntity, StoreEntity, ProductEntity],
         autoLoadEntities: false,
         synchronize: false,
@@ -40,11 +40,11 @@ import { EmailModule } from './modules/email/email.module';
     }),
     CredentialModule,
     CryptographyModule,
+    EmailModule,
     UserModule,
     AuthModule,
     StoreModule,
     ProductModule,
-    EmailModule,
   ],
   controllers: [],
   providers: [],

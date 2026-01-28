@@ -13,9 +13,9 @@ import { JwtServiceImplementation } from './jwt.service';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.getOrThrow('JWT_SECRET'),
+        secret: configService.getOrThrow<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: parseInt(configService.getOrThrow('JWT_TTL')),
+          expiresIn: Number(configService.getOrThrow('JWT_TTL')),
         },
       }),
     }),

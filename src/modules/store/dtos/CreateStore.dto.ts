@@ -19,7 +19,6 @@ export class CreateStoreDto {
   public readonly name: string;
 
   @IsNotEmpty()
-  @IsString()
   @MaxLength(15)
   @IsPhoneNumber()
   public readonly phone: string;
