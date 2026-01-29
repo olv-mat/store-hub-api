@@ -18,7 +18,13 @@ export class ProductService {
     const where = {
       ...(inStock !== undefined && { inStock: inStock }),
     };
-    return this.productRepository.find({ where });
+    return this.productRepository.find({
+      where,
+      order: {
+        inStock: 'DESC',
+        stockUpdatedAt: 'DESC',
+      },
+    });
   }
 
   public findOne(id: string, relations: string[] = []): Promise<ProductEntity> {
@@ -28,13 +34,18 @@ export class ProductService {
   public create(dto: CreateProductDto): Promise<ProductEntity> {
     return this.productRepository.save({
       ...dto,
-      store: { id: dto.store } as StoreEntity,
+      store: { id: dto.storeId } as StoreEntity,
     });
   }
 
   public async update(id: string, dto: UpdateProductDto): Promise<void> {
     assertHasUpdatableFields(dto);
-    await this.productRepository.update(id, dto);
+    await this.productRepository.update(id, {
+      ...dto,
+      ...(dto.inStock !== undefined && {
+        stockUpdatedAt: new Date(),
+      }),
+    });
   }
 
   public async delete(id: string): Promise<void> {

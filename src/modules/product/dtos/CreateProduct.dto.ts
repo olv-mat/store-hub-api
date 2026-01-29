@@ -11,7 +11,7 @@ import {
 export class CreateProductDto {
   @IsNotEmpty()
   @IsUUID()
-  readonly store: string;
+  public readonly storeId: string;
 
   @IsNotEmpty()
   @IsString()

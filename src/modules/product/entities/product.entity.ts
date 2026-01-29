@@ -25,4 +25,11 @@ export class ProductEntity extends AbstractEntity {
   @Index()
   @Column({ name: 'in_stock', type: 'boolean', default: true })
   inStock: boolean;
+
+  @Column({
+    name: 'stock_updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  stockUpdatedAt: Date;
 }

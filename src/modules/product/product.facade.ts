@@ -30,7 +30,7 @@ export class ProductFacade {
     dto: CreateProductDto,
     user: AccessTokenPayload,
   ): Promise<DefaultResponseDto> {
-    const storeEntity = await this.storeService.findOne(dto.store, ['owner']);
+    const storeEntity = await this.storeService.findOne(dto.storeId, ['owner']);
     assertOwner(user, storeEntity.owner.id);
     const occupiedSlots = await this.productService.countByStoreId(
       storeEntity.id,
