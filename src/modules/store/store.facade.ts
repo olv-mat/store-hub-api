@@ -35,7 +35,7 @@ export class StoreFacade {
   }
 
   public async create(dto: CreateStoreDto): Promise<DefaultResponseDto> {
-    await this.userService.findOne(dto.owner);
+    await this.userService.findOne(dto.ownerId);
     const { id } = await this.storeService.create(dto);
     return DefaultResponseDto.create(id, 'Store created successfully');
   }

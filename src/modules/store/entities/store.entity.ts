@@ -9,9 +9,10 @@ import {
   OneToMany,
   OneToOne,
 } from 'typeorm';
+import { StoreCategories } from '../enums/store-categories.enum';
 
 @Entity('stores')
-@Index(['city', 'state'])
+@Index(['state', 'city', 'neighborhood'])
 export class StoreEntity extends AbstractEntity {
   @OneToOne(() => UserEntity, (user) => user.store, {
     onDelete: 'CASCADE',
@@ -23,6 +24,9 @@ export class StoreEntity extends AbstractEntity {
   @Column({ length: 100, nullable: false })
   name: string;
 
+  @Column({ type: 'enum', enum: StoreCategories })
+  category: StoreCategories;
+
   @Column({ length: 15, nullable: false })
   phone: string;
 
@@ -31,9 +35,6 @@ export class StoreEntity extends AbstractEntity {
 
   @Column({ length: 20, nullable: false })
   number: string;
-
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  complement?: string;
 
   @Column({ length: 100, nullable: false })
   neighborhood: string;
@@ -44,14 +45,8 @@ export class StoreEntity extends AbstractEntity {
   @Column({ length: 2, nullable: false })
   state: string;
 
-  @Column({ type: 'varchar', name: 'postal_code', length: 20, nullable: true })
-  postalCode?: string;
-
-  @Column({ length: 2, nullable: false })
-  country: string;
-
-  @Column({ name: 'product_slots', default: 10 })
-  productSlots: number;
+  @Column({ default: 10 })
+  slots: number;
 
   @OneToMany(() => ProductEntity, (product) => product.store)
   products: ProductEntity[];

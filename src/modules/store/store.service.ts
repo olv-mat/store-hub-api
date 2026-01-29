@@ -32,16 +32,16 @@ export class StoreService {
   public create(dto: CreateStoreDto): Promise<StoreEntity> {
     return this.storeRepository.save({
       ...dto,
-      owner: { id: dto.owner } as UserEntity,
+      owner: { id: dto.ownerId } as UserEntity,
     });
   }
 
   public async request(dto: RequestStoreDto): Promise<void> {
     const subject = `Store Hub | New Request: ${dto.store}`;
     const html = `
-          <h3>New store request received</h3>
-          <p><strong>Store:</strong> ${dto.store}</p>
-          <p><strong>Owner:</strong> ${dto.owner}</p>
+          <h1>New Store Request Received</h1>
+          <p><strong>Store Name:</strong> ${dto.store}</p>
+          <p><strong>Owner Name:</strong> ${dto.owner}</p>
           <p><strong>Phone:</strong> ${dto.phone}</p>
           <p><strong>Description:</strong> ${dto.description}</p>
         `;
@@ -57,7 +57,7 @@ export class StoreService {
     storeEntity: StoreEntity,
     currentUsage: number,
   ): void {
-    if (currentUsage >= storeEntity.productSlots) {
+    if (currentUsage >= storeEntity.slots) {
       throw new BadRequestException('No available product slots');
     }
   }

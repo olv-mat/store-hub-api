@@ -1,26 +1,29 @@
 import {
+  IsEnum,
   IsNotEmpty,
-  IsOptional,
   IsPhoneNumber,
   IsString,
   IsUUID,
   Length,
   MaxLength,
 } from 'class-validator';
+import { StoreCategories } from '../enums/store-categories.enum';
 
 export class CreateStoreDto {
   @IsNotEmpty()
   @IsUUID()
-  public readonly owner: string;
+  public readonly ownerId: string;
 
   @IsNotEmpty()
   @IsString()
   @MaxLength(100)
   public readonly name: string;
 
+  @IsEnum(StoreCategories)
+  public readonly category: StoreCategories;
+
   @IsNotEmpty()
-  @MaxLength(15)
-  @IsPhoneNumber()
+  @IsPhoneNumber('BR')
   public readonly phone: string;
 
   @IsNotEmpty()
@@ -32,12 +35,6 @@ export class CreateStoreDto {
   @IsString()
   @MaxLength(20)
   public readonly number: string;
-
-  @IsOptional()
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(100)
-  public readonly complement?: string;
 
   @IsNotEmpty()
   @IsString()
@@ -53,15 +50,4 @@ export class CreateStoreDto {
   @IsString()
   @Length(2, 2)
   public readonly state: string;
-
-  @IsOptional()
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(20)
-  public readonly postalCode?: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @Length(2, 2)
-  public readonly country: string;
 }
