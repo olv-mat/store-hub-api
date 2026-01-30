@@ -12,6 +12,7 @@ import { CreateStoreDto } from './dtos/CreateStore.dto';
 import { RequestStoreDto } from './dtos/RequestStore.dto';
 import { UpdateStoreDto } from './dtos/UpdateStore.dto';
 import { StoreEntity } from './entities/store.entity';
+import { MailTemplateHelper } from './helpers/email-temaplate.helper';
 
 @Injectable()
 export class StoreService {
@@ -37,14 +38,8 @@ export class StoreService {
   }
 
   public async request(dto: RequestStoreDto): Promise<void> {
-    const subject = `Store Hub | New Request: ${dto.store}`;
-    const html = `
-          <h1>New Store Request Received</h1>
-          <p><strong>Store Name:</strong> ${dto.store}</p>
-          <p><strong>Owner Name:</strong> ${dto.owner}</p>
-          <p><strong>Phone:</strong> ${dto.phone}</p>
-          <p><strong>Description:</strong> ${dto.description}</p>
-        `;
+    const subject = `[New Store] ${dto.store} | ${dto.category} - ${dto.city}/${dto.state}`;
+    const html = MailTemplateHelper.buildStoreRequestHtml(dto);
     await this.emailService.send(subject, html);
   }
 
