@@ -11,8 +11,9 @@ export function swaggerSetup(app: INestApplication): void {
   const builder = new DocumentBuilder()
     .setTitle('Store Hub API')
     .setDescription(
-      `A NestJS-based API designed for a SaaS store management system. 
-      It includes modules for users, stores, and products, featuring JWT authentication and RBAC.`.trim(),
+      `A NestJS API built to support a SaaS store management platform. 
+      It provides features for managing users, stores, and products, 
+      secured with JWT authentication and role-based authorization.`.trim(),
     )
     .setVersion('1.0')
     .addBearerAuth()

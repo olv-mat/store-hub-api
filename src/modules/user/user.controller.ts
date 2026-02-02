@@ -8,6 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiOperation } from '@nestjs/swagger';
 import { FromRequest } from 'src/common/decorators/from-request.decorator';
 import { IdParam } from 'src/common/decorators/id-param.decorator';
 import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
@@ -27,6 +28,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Retrieve all users' })
   @Roles(UserRoles.ADMIN)
   public async findAll(): Promise<UserResponseDto[]> {
     const userEntities = await this.userService.findAll();
@@ -34,6 +36,7 @@ export class UserController {
   }
 
   @Get('/me')
+  @ApiOperation({ summary: 'Retrieve the current user' })
   @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public async findMe(
     @FromRequest('user') user: AccessTokenPayload,
@@ -43,6 +46,7 @@ export class UserController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Retrieve a specific user' })
   @Roles(UserRoles.ADMIN)
   public async findOne(@IdParam() id: string): Promise<UserResponseDto> {
     const userEntity = await this.userService.findOne(id, ['store']);
@@ -50,6 +54,7 @@ export class UserController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a new user' })
   @Roles(UserRoles.ADMIN)
   public async create(@Body() dto: CreateUserDto): Promise<DefaultResponseDto> {
     const { id } = await this.userService.create(dto);
@@ -57,6 +62,7 @@ export class UserController {
   }
 
   @Patch('/me')
+  @ApiOperation({ summary: 'Update the current user' })
   @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public async updateMe(
     @FromRequest('user') user: AccessTokenPayload,
@@ -69,6 +75,7 @@ export class UserController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a specific user' })
   @Roles(UserRoles.ADMIN)
   public async update(
     @IdParam() id: string,
@@ -79,6 +86,7 @@ export class UserController {
   }
 
   @Delete('/me')
+  @ApiOperation({ summary: 'Delete the current user' })
   @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public async deleteMe(
     @FromRequest('user') user: AccessTokenPayload,
@@ -90,6 +98,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a specific user' })
   @Roles(UserRoles.ADMIN)
   public async delete(@IdParam() id: string): Promise<MessageResponseDto> {
     await this.userService.delete(id);

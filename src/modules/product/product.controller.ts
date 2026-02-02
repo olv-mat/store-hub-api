@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiOperation } from '@nestjs/swagger';
 import { FromRequest } from 'src/common/decorators/from-request.decorator';
 import { IdParam } from 'src/common/decorators/id-param.decorator';
 import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
@@ -27,6 +28,7 @@ export class ProductController {
   constructor(private readonly productFacade: ProductFacade) {}
 
   @Get()
+  @ApiOperation({ summary: 'Retrieve all products' })
   public findAll(
     @Query('inStock') inStock?: boolean,
   ): Promise<ProductResponseDto[]> {
@@ -34,11 +36,13 @@ export class ProductController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Retrieve a specific product' })
   public async findOne(@IdParam() id: string): Promise<ProductResponseDto> {
     return this.productFacade.findOne(id);
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a new product' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public create(
@@ -49,6 +53,7 @@ export class ProductController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a specific product' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public update(
@@ -60,6 +65,7 @@ export class ProductController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a specific product' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public delete(
