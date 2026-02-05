@@ -1,0 +1,16 @@
+export enum ProductCategories {
+  SHIRTS = 'Shirts',
+  PANTS = 'Pants',
+  DRESSES = 'Dresses',
+  JACKETS = 'Jackets',
+  FRAGRANCES = 'Fragrances',
+  SKINCARE = 'Skincare',
+  MAKEUP = 'Makeup',
+  CASUAL_SHOES = 'Casual Shoes',
+  SPORT_SHOES = 'Sport Shoes',
+  BOOTS = 'Boots',
+  WATCHES = 'Watches',
+  JEWELRY = 'Jewelry',
+  BAGS = 'Bags',
+  BELTS = 'Belts',
+}
