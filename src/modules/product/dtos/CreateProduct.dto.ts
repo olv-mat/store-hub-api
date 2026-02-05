@@ -1,5 +1,6 @@
 import {
   IsBoolean,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsPositive,
@@ -7,6 +8,7 @@ import {
   IsUUID,
   MaxLength,
 } from 'class-validator';
+import { ProductCategories } from '../enums/product-categories.enum';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -17,6 +19,9 @@ export class CreateProductDto {
   @IsString()
   @MaxLength(100)
   public readonly name: string;
+
+  @IsEnum(ProductCategories)
+  public readonly category: ProductCategories;
 
   @IsNotEmpty()
   @IsString()

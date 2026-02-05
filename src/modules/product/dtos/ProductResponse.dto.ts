@@ -1,9 +1,11 @@
 import { StoreResponseDto } from 'src/modules/store/dtos/StoreResponse.dto';
 import { ProductEntity } from '../entities/product.entity';
+import { ProductCategories } from '../enums/product-categories.enum';
 
 type ProductResponseProperties = {
   id: string;
   name: string;
+  category: ProductCategories;
   description: string;
   price: number;
   image: string;
@@ -14,6 +16,7 @@ type ProductResponseProperties = {
 export class ProductResponseDto {
   public readonly id: string;
   public readonly name: string;
+  public readonly category: ProductCategories;
   public readonly description: string;
   public readonly price: number;
   public readonly image: string;
@@ -23,6 +26,7 @@ export class ProductResponseDto {
   private constructor(properties: ProductResponseProperties) {
     this.id = properties.id;
     this.name = properties.name;
+    this.category = properties.category;
     this.description = properties.description;
     this.price = properties.price;
     this.image = properties.image;
@@ -38,6 +42,7 @@ export class ProductResponseDto {
     return new ProductResponseDto({
       id: entity.id,
       name: entity.name,
+      category: entity.category,
       description: entity.description,
       price: entity.price,
       image: entity.image,

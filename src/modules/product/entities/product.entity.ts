@@ -1,6 +1,5 @@
 import { AbstractEntity } from 'src/common/entities/abstract.entity';
 import { StoreEntity } from 'src/modules/store/entities/store.entity';
-import { StoreCategories } from 'src/modules/store/enums/store-categories.enum';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { ProductCategories } from '../enums/product-categories.enum';
 
@@ -15,7 +14,7 @@ export class ProductEntity extends AbstractEntity {
   @Column({ length: 100, nullable: false })
   name: string;
 
-  @Column({ type: 'enum', enum: StoreCategories })
+  @Column({ type: 'enum', enum: ProductCategories })
   category: ProductCategories;
 
   @Column({ type: 'text', nullable: false })
