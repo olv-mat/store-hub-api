@@ -19,6 +19,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRoles } from '../user/enums/user-roles.enum';
 import { CreateProductDto } from './dtos/CreateProduct.dto';
+import { ProductQueryDto } from './dtos/ProductQueryDto';
 import { ProductResponseDto } from './dtos/ProductResponse.dto';
 import { UpdateProductDto } from './dtos/UpdateProduct.dto';
 import { ProductFacade } from './product.facade';
@@ -30,9 +31,9 @@ export class ProductController {
   @Get()
   @ApiOperation({ summary: 'Retrieve all products' })
   public findAll(
-    @Query('inStock') inStock?: boolean,
+    @Query() query: ProductQueryDto,
   ): Promise<ProductResponseDto[]> {
-    return this.productFacade.findAll(inStock);
+    return this.productFacade.findAll(query);
   }
 
   @Get(':id')

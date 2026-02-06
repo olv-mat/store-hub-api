@@ -5,6 +5,7 @@ import { AccessTokenPayload } from 'src/common/modules/credential/contracts/acce
 import { assertOwner } from 'src/common/utils/assert-owner';
 import { StoreService } from '../store/store.service';
 import { CreateProductDto } from './dtos/CreateProduct.dto';
+import { ProductQueryDto } from './dtos/ProductQueryDto';
 import { ProductResponseDto } from './dtos/ProductResponse.dto';
 import { UpdateProductDto } from './dtos/UpdateProduct.dto';
 import { ProductService } from './product.service';
@@ -16,8 +17,8 @@ export class ProductFacade {
     private readonly storeService: StoreService,
   ) {}
 
-  public async findAll(inStock?: boolean): Promise<ProductResponseDto[]> {
-    const productEntities = await this.productService.findAll(inStock);
+  public async findAll(query: ProductQueryDto): Promise<ProductResponseDto[]> {
+    const productEntities = await this.productService.findAll(query);
     return ProductResponseDto.fromEntities(productEntities);
   }
 

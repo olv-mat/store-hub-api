@@ -4,6 +4,7 @@ import { assertHasUpdatableFields } from 'src/common/utils/assert-has-updatable-
 import { Repository } from 'typeorm';
 import { StoreEntity } from '../store/entities/store.entity';
 import { CreateProductDto } from './dtos/CreateProduct.dto';
+import { ProductQueryDto } from './dtos/ProductQueryDto';
 import { UpdateProductDto } from './dtos/UpdateProduct.dto';
 import { ProductEntity } from './entities/product.entity';
 
@@ -14,8 +15,10 @@ export class ProductService {
     private readonly productRepository: Repository<ProductEntity>,
   ) {}
 
-  public findAll(inStock?: boolean): Promise<ProductEntity[]> {
+  public findAll(query: ProductQueryDto): Promise<ProductEntity[]> {
+    const { category, inStock } = query;
     const where = {
+      ...(category !== undefined && { category: category }),
       ...(inStock !== undefined && { inStock: inStock }),
     };
     return this.productRepository.find({
