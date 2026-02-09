@@ -16,8 +16,13 @@ export class ProductService {
   ) {}
 
   public findAll(query: ProductQueryDto): Promise<ProductEntity[]> {
-    const { category, inStock } = query;
+    const { state, city, neighborhood, category, inStock } = query;
     const where = {
+      store: {
+        ...(state !== undefined && { state: state }),
+        ...(city !== undefined && { city: city }),
+        ...(neighborhood !== undefined && { neighborhood: neighborhood }),
+      },
       ...(category !== undefined && { category: category }),
       ...(inStock !== undefined && { inStock: inStock }),
     };
