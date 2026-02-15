@@ -9,12 +9,19 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { FromRequest } from 'src/common/decorators/from-request.decorator';
 import { IdParam } from 'src/common/decorators/id-param.decorator';
 import { DefaultResponseDto } from 'src/common/dtos/DefaultResponse.dto';
 import { MessageResponseDto } from 'src/common/dtos/MessageResponse.dto';
 import { AccessTokenPayload } from 'src/common/modules/credential/contracts/access-token-payload';
+import {
+  SwaggerBadRequest,
+  SwaggerForbidden,
+  SwaggerInternalServerError,
+  SwaggerNotFound,
+  SwaggerUnauthorized,
+} from 'src/common/swagger/responses.swagger';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRoles } from '../user/enums/user-roles.enum';
@@ -30,6 +37,7 @@ export class ProductController {
 
   @Get()
   @ApiOperation({ summary: 'Retrieve all products' })
+  @SwaggerInternalServerError()
   public findAll(
     @Query() query: ProductQueryDto,
   ): Promise<ProductResponseDto[]> {
@@ -38,12 +46,20 @@ export class ProductController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Retrieve a specific product' })
+  @SwaggerNotFound('Product not found')
+  @SwaggerInternalServerError()
   public async findOne(@IdParam() id: string): Promise<ProductResponseDto> {
     return this.productFacade.findOne(id);
   }
 
   @Post()
   @ApiOperation({ summary: 'Create a new product' })
+  @ApiBearerAuth()
+  @SwaggerBadRequest('No available product slots')
+  @SwaggerUnauthorized('Unauthorized')
+  @SwaggerForbidden('You cannot access this resource')
+  @SwaggerNotFound('Store not found')
+  @SwaggerInternalServerError()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public create(
@@ -55,6 +71,12 @@ export class ProductController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a specific product' })
+  @ApiBearerAuth()
+  @SwaggerBadRequest('At least one field must be provided')
+  @SwaggerUnauthorized('Unauthorized')
+  @SwaggerForbidden('You cannot access this resource')
+  @SwaggerNotFound('Product not found')
+  @SwaggerInternalServerError()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public update(
@@ -67,6 +89,11 @@ export class ProductController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a specific product' })
+  @ApiBearerAuth()
+  @SwaggerUnauthorized('Unauthorized')
+  @SwaggerForbidden('You cannot access this resource')
+  @SwaggerNotFound('Product not found')
+  @SwaggerInternalServerError()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoles.ADMIN, UserRoles.OWNER)
   public delete(
