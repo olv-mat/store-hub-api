@@ -12,7 +12,6 @@ import { CreateStoreDto } from './dtos/CreateStore.dto';
 import { RequestStoreDto } from './dtos/RequestStore.dto';
 import { UpdateStoreDto } from './dtos/UpdateStore.dto';
 import { StoreEntity } from './entities/store.entity';
-import { MailTemplateHelper } from './helpers/email-temaplate.helper';
 
 @Injectable()
 export class StoreService {
@@ -38,9 +37,22 @@ export class StoreService {
   }
 
   public async request(dto: RequestStoreDto): Promise<void> {
-    const subject = `[New Store] ${dto.store} | ${dto.category} - ${dto.city}/${dto.state}`;
-    const html = MailTemplateHelper.buildStoreRequestHtml(dto);
-    await this.emailService.send(subject, html);
+    const {
+      store,
+      category,
+      city,
+      state,
+      owner,
+      email,
+      whatsapp,
+      street,
+      number,
+      neighborhood,
+      description,
+    } = dto;
+    const subject = `[New Store Request]`;
+    const text = `${owner} has requested the creation of a new store called "${store}" in the ${category} category, located in ${city}, ${state}. You can reach them at ${email} or ${whatsapp}. The address is ${street}, ${number}, in the ${neighborhood} neighborhood. They described it as "${description}".`;
+    await this.emailService.send(subject, text);
   }
 
   public async update(id: string, dto: UpdateStoreDto): Promise<void> {

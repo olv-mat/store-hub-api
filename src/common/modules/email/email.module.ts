@@ -1,15 +1,15 @@
+import { HttpModule } from '@nestjs/axios';
 import { Global, Module } from '@nestjs/common';
+import { EmailDeliveryImplementation } from './email-delivery.service';
 import { EmailService } from './email.service';
-import { ResendServiceImplementation } from './resend.service';
-
-// npm i resend
 
 @Global()
 @Module({
+  imports: [HttpModule],
   providers: [
     {
       provide: EmailService,
-      useClass: ResendServiceImplementation,
+      useClass: EmailDeliveryImplementation,
     },
   ],
   exports: [EmailService],
