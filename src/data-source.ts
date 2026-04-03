@@ -5,9 +5,9 @@ import { StoreEntity } from './modules/store/entities/store.entity';
 import { UserEntity } from './modules/user/entities/user.entity';
 
 /* 
-  npm run migration:generate -- src/migrations/...
-  npm run migration:run
-  npm run migration:revert
+  pnpm run migration:generate -- src/migrations/...
+  pnpm run migration:run
+  pnpm run migration:revert
 */
 
 export const AppDataSource = new DataSource({

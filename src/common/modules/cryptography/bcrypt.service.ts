@@ -3,8 +3,8 @@ import * as bcrypt from 'bcrypt';
 import { CryptographyService } from './cryptography.service';
 
 /* 
-  npm install bcrypt
-  npm install --D @types/bcrypt 
+  pnpm add bcrypt
+  pnpm add --D @types/bcrypt 
 */
 
 @Injectable()

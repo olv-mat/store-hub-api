@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { CredentialService } from './credential.service';
 import { JwtServiceImplementation } from './jwt.service';
 
-// npm i @nestjs/jwt
+// pnpm add @nestjs/jwt
 
 @Global()
 @Module({
