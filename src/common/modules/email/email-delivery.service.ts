@@ -1,10 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { HttpService } from '@nestjs/axios';
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { EmailService } from './email.service';
@@ -18,8 +13,6 @@ interface EmailDeliveryResponse {
 
 @Injectable()
 export class EmailDeliveryImplementation implements EmailService {
-  private readonly logger = new Logger(EmailDeliveryImplementation.name);
-
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
@@ -34,10 +27,14 @@ export class EmailDeliveryImplementation implements EmailService {
             subject: subject,
             text: text,
           },
+          {
+            headers: {
+              Authorization: `Bearer ${this.configService.getOrThrow<string>('EMAIL_DELIVERY_TOKEN')}`,
+            },
+          },
         ),
       );
-    } catch (error) {
-      this.logger.error(error?.message);
+    } catch {
       throw new InternalServerErrorException('Failed to send request store');
     }
   }
