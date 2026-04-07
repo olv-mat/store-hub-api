@@ -3,8 +3,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 
 /* 
-  pnpm add @nestjs/swagger swagger-ui-express
-  pnpm add swagger-themes
+  npm install @nestjs/swagger swagger-ui-express
+  npm install swagger-themes
 */
 
 export function swaggerSetup(app: INestApplication): void {

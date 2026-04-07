@@ -15,14 +15,15 @@ import { UserEntity } from './modules/user/entities/user.entity';
 import { UserModule } from './modules/user/user.module';
 
 /*
-  pnpm add @nestjs/config
-  pnpm add @nestjs/typeorm typeorm
-  pnpm add pg
+  npm i @nestjs/config
+  npm i @nestjs/typeorm typeorm
+  npm i pg
 */
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    // npm audit fix
     ThrottlerModule.forRoot({
       throttlers: [
         {

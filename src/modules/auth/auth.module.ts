@@ -6,8 +6,8 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 /* 
-  pnpm add @nestjs/passport passport passport-jwt
-  pnpm add -D @types/passport-jwt
+  npm install @nestjs/passport passport passport-jwt
+  npm install -D @types/passport-jwt
 */
 
 @Module({

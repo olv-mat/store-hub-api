@@ -3,7 +3,7 @@ import { AppDataSource } from 'src/data-source';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { UserRoles } from 'src/modules/user/enums/user-roles.enum';
 
-// pnpm run seed:admin
+// npm run seed:admin
 
 export async function seedAdmin(): Promise<void> {
   const { ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD } = process.env;

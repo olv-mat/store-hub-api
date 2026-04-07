@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { EmailService } from './email.service';
 
-// pnpm add @nestjs/axios axios
+// npm i @nestjs/axios axios
 
 interface EmailDeliveryResponse {
   success: boolean;
