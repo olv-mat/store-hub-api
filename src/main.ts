@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { Environments } from './common/enums/environments.enum';
-import { swaggerSetup } from './common/swagger/setup.swagger';
+import { swaggerSetup } from './common/settings/swagger/swagger.setup';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

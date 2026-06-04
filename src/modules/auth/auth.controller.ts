@@ -3,7 +3,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import {
   SwaggerInternalServerError,
   SwaggerUnauthorized,
-} from 'src/common/swagger/responses.swagger';
+} from 'src/common/settings/swagger/swagger.decorators';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/Login.dto';
 import { LoginResponseDto } from './dtos/LoginResponse.dto';
